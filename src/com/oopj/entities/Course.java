@@ -1,5 +1,10 @@
 package com.oopj.entities;
 
-public class Course {
+import java.util.List;
 
+public class Course {
+	private String name;
+	private String id;
+	private List<Student> studentList;
+	private Professor professor;
 }
