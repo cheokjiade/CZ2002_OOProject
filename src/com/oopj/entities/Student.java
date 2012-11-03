@@ -14,5 +14,21 @@ public class Student extends Person{
 		this.resultList = new ArrayList<Result>();
 		this.courseList = new ArrayList<Course>();
 	}
+
+	public List<Result> getResultList() {
+		return resultList;
+	}
+
+	public void setResultList(List<Result> resultList) {
+		this.resultList = resultList;
+	}
+
+	public List<Course> getCourseList() {
+		return courseList;
+	}
+
+	public void setCourseList(List<Course> courseList) {
+		this.courseList = courseList;
+	}
 	
 }
