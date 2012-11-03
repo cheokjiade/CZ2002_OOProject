@@ -13,17 +13,19 @@ public class main {
 	 */
 	public List<Student> studentList= new ArrayList<Student>();
 	public List<Course> courseList =  new ArrayList<Course>();
+	static Scanner sc;
 	public static void main(String[] args) {
 		Person person = new Student("a", "a");
 		int choice;
 		do{
 			System.out.println("(1)Add Student");
 			System.out.println("(2)Add Course");
-			Scanner sc = new Scanner(System.in);
+			sc = new Scanner(System.in);
 			choice = sc.nextInt();
 			
 			switch(choice){
 				case 1:
+					
 					break;
 				case 2:
 					break;
