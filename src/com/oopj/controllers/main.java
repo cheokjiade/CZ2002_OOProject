@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.db4o.Db4oEmbedded;
+import com.db4o.ObjectContainer;
 import com.oopj.entities.*;
 
 public class main {
@@ -11,11 +13,15 @@ public class main {
 	/**
 	 * @param args
 	 */
-	public static List<Student> studentList= new ArrayList<Student>();
+	public static List<Student> studentList;//= new ArrayList<Student>();
 	public static List<Course> courseList =  new ArrayList<Course>();
 	static Scanner sc;
+	static ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded .newConfiguration(), "temp.db");
 	public static void main(String[] args) {
-		Person person = new Student("a", "a");
+		//Person person = new Student("a", "a");
+		List <Student> studentsFromDB = db.query(Student.class);
+		studentList = new ArrayList(studentsFromDB);
+		//studentList = db.query(Student.class);
 		int choice;
 		do{
 			System.out.println("(1)Add Student");
@@ -41,13 +47,21 @@ public class main {
 				case 3:
 					registerStudent();
 					break;
+				case 20:
+					viewAllStudents();
+					break;
 			}
 		}while(choice!=7);
+		db.close();
 
 	}
 	
 	public static void addStudent(){
-		studentList.add(new Student(sc.next(), sc.next()));
+		System.out.println("Student : Input name followed by id.");
+		Student student = new Student(sc.next(), sc.next());
+		if(studentList==null) studentList = new ArrayList<Student>();;
+		studentList.add(student);
+		db.store(student);
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
 			System.out.println(s.getId() + " " + s.getName());
 		}
@@ -78,6 +92,11 @@ public class main {
 		System.out.println("Printing course list of student");
 		for(Course tempCourse : s.getCourseList()){
 			System.out.println(tempCourse.getId() + " " + tempCourse.getName());
+		}
+	}
+	public static void viewAllStudents(){
+		for(Student s: studentList){//int i=0;i<studentList.size();i++
+			System.out.println("id: " +s.getId() + "\tname: " + s.getName());
 		}
 	}
 
