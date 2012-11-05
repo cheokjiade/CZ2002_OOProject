@@ -2,14 +2,14 @@ package com.oopj.entities;
 
 import java.util.List;
 
-public abstract class CourseClass {
+public class CourseClass {
 	private int maxSize;
 	private String id;
 	private String name;
-	private String type;
+	private int type;
 	private Course parentCourse;
 	private List<Student> studentList;
-	public CourseClass(int maxSize, String id, String name, String type, Course parentCourse) {
+	public CourseClass(String name, String id, int maxSize, int type, Course parentCourse) {
 		this.maxSize = maxSize;
 		this.id = id;
 		this.name = name;
@@ -46,10 +46,10 @@ public abstract class CourseClass {
 	public void setStudentList(List<Student> studentList) {
 		this.studentList = studentList;
 	}
-	public String getType() {
+	public int getType() {
 		return type;
 	}
-	public void setType(String type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 	

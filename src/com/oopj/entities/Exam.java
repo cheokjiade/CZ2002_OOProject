@@ -5,8 +5,6 @@ import java.util.List;
 
 public class Exam extends ExamComponent {
 	
-
-	
 	public Exam(String examid, String name, int totalScore, int weightage) {
 		this.setId(examid);
 		this.setName(name);

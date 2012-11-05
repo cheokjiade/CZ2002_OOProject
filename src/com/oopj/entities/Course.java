@@ -9,12 +9,19 @@ public class Course {
 	private String name;
 	private String id;
 	private List<Student> studentList;
+	private List<CourseClass> courseClassList;
 	private Professor professor;
 	public Course(String name, String id) {
 		this.name = name;
 		this.id = id;
 		studentList = new ArrayList<Student>();
-		
+		courseClassList = new ArrayList<CourseClass>();
+	}
+	public List<CourseClass> getCourseClassList() {
+		return courseClassList;
+	}
+	public void setCourseClassList(List<CourseClass> courseClassList) {
+		this.courseClassList = courseClassList;
 	}
 	public String getName() {
 		return name;

@@ -14,13 +14,14 @@ public class main {
 	 * @param args
 	 */
 	public static List<Student> studentList;//= new ArrayList<Student>();
-	public static List<Course> courseList =  new ArrayList<Course>();
+	public static List<Course> courseList;// =  new ArrayList<Course>();
 	static Scanner sc;
 	static ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded .newConfiguration(), "temp.db");
 	public static void main(String[] args) {
 		//Person person = new Student("a", "a");
 		List <Student> studentsFromDB = db.query(Student.class);
 		studentList = new ArrayList(studentsFromDB);
+		courseList = new ArrayList(db.query(Course.class));
 		//studentList = db.query(Student.class);
 		int choice;
 		do{
@@ -49,7 +50,9 @@ public class main {
 					break;
 				case 20:
 					viewAllStudents();
+					viewAllCourses();
 					break;
+					
 			}
 		}while(choice!=7);
 		db.close();
@@ -59,7 +62,7 @@ public class main {
 	public static void addStudent(){
 		System.out.println("Student : Input name followed by id.");
 		Student student = new Student(sc.next(), sc.next());
-		if(studentList==null) studentList = new ArrayList<Student>();;
+		if(studentList==null) studentList = new ArrayList<Student>();
 		studentList.add(student);
 		db.store(student);
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
@@ -67,11 +70,59 @@ public class main {
 		}
 	}
 	public static void addCourse(){
-		courseList.add(new Course(sc.next(), sc.next()));
+		System.out.println("Course: Input name followed by id.");
+		Course course = new Course(sc.next(), sc.next());
+		courseList.add(course);
+		
 		for(Course c: courseList){//int i=0;i<studentList.size();i++
 			System.out.println(c.getId() + " " + c.getName());
 		}
+		addCourseClass(course);
+		db.store(course);
 	}
+	
+	public static void addCourseClass(Course course){
+		System.out.println("Choose Course Type");
+		System.out.println("(1) Lectures, Laboratory, Tutorials");
+		System.out.println("(2) Lectures & Tutorials ONLY");
+		System.out.println("(3) Lectures ONLY");
+		sc = new Scanner(System.in);
+		int choiceOfClass = sc.nextInt();
+		
+		switch(choiceOfClass){
+			case 1:
+				System.out.println("Inserting lectures...");
+				addClass(course, 1);
+				System.out.println("Inserting tutorials...");
+				addClass(course, 2);
+				System.out.println("Inserting laboratory...");
+				addClass(course, 3);
+				break;
+			case 2:
+				System.out.println("Inserting lectures...");
+				addClass(course, 1);
+				System.out.println("Inserting tutorials...");
+				addClass(course, 2);
+				break;
+			case 3:
+				//addL();
+				System.out.println("Inserting lectures...");
+				addClass(course, 1);
+				break;
+		}
+	}
+	
+	public static void addClass(Course course, int type){
+		System.out.println("How many of this class type do you want to create?");
+		int classAmt = sc.nextInt();
+		for(int i =0;i<classAmt;i++){
+			System.out.println("Please enter class name, class id and class size.");
+			CourseClass tempCourseClass = new CourseClass(sc.next(), sc.next(), sc.nextInt(), type, course);
+			course.getCourseClassList().add(tempCourseClass);
+		}
+	}
+	
+	
 	public static void registerStudent(){
 		for (int i=0;i<studentList.size();i++){
 			System.out.println(Integer.toString(i) + ". " + studentList.get(i).getId() + " " + studentList.get(i).getName());
@@ -97,6 +148,14 @@ public class main {
 	public static void viewAllStudents(){
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
 			System.out.println("id: " +s.getId() + "\tname: " + s.getName());
+		}
+	}
+	public static void viewAllCourses(){
+		for(Course c: courseList){//int i=0;i<studentList.size();i++
+			System.out.println("Course id: " +c.getId() + "\tname: " + c.getName());
+			for(CourseClass cc : c.getCourseClassList()){
+				System.out.println(cc.getName() + "" + cc.getId() + " " + Integer.toString(cc.getMaxSize()) + " " + cc.getType());
+			}
 		}
 	}
 
