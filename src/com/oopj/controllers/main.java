@@ -105,7 +105,6 @@ public class main {
 				addClass(course, 2);
 				break;
 			case 3:
-				//addL();
 				System.out.println("Inserting lectures...");
 				addClass(course, 1);
 				break;
