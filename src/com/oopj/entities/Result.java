@@ -4,9 +4,19 @@ public class Result {
 	private String id;
 	private int score;
 	
-	public Result(String resultid, int score) {
+	private Student parentStudent;
+	
+	public Result(String resultid, int score, Student parentStudent) {
 		this.id = resultid;
 		this.score = score;
+		this.parentStudent = parentStudent;
+	}
+	
+	public Student getParentStudent() {
+		return parentStudent;
+	}
+	public void setParentStudent(Student parentStudent) {
+		this.parentStudent = parentStudent;
 	}
 
 	public void setId (String resultid) {
