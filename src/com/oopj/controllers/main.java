@@ -15,6 +15,7 @@ public class main {
 	 */
 	public static List<Student> studentList;//= new ArrayList<Student>();
 	public static List<Course> courseList;// =  new ArrayList<Course>();
+	public static List<CourseClass> courseClassList;
 	static Scanner sc;
 	static ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded .newConfiguration(), "temp.db");
 	public static void main(String[] args) {
@@ -22,6 +23,7 @@ public class main {
 		List <Student> studentsFromDB = db.query(Student.class);
 		studentList = new ArrayList(studentsFromDB);
 		courseList = new ArrayList(db.query(Course.class));
+		courseClassList = new ArrayList(db.query(CourseClass.class));
 		//studentList = db.query(Student.class);
 		int choice;
 		do{
@@ -263,11 +265,13 @@ public class main {
 	}
 	
 	public static void registerStudent(){
+		
 		for (int i=0;i<studentList.size();i++){
 			System.out.println(Integer.toString(i) + ". " + studentList.get(i).getId() + " " + studentList.get(i).getName());
 		}
 		System.out.println("Select student to register: ");
 		Student s = studentList.get(sc.nextInt());
+		
 		System.out.println("Select course to register student into: ");
 		for (int i=0;i<courseList.size();i++){
 			System.out.println(Integer.toString(i) + ". " + courseList.get(i).getId() + " " + courseList.get(i).getName());
@@ -277,13 +281,31 @@ public class main {
 			System.out.println("Student is already enrolled.");
 			return;
 		}
+		
+		//add student to course
 		s.getCourseList().add(c);
 		c.getStudentList().add(s);
+
+
+		
+		System.out.println("Please select the class to register for...");
+		  for (int i=0;i<c.getCourseClassList().size();i++){
+		   System.out.println(Integer.toString(i) + ". " + c.getCourseClassList().get(i).getId() + " " + c.getCourseClassList().get(i).getName());
+		  }
+		CourseClass cc = c.getCourseClassList().get(sc.nextInt());
+		c.getCourseClassList().add(cc);
+
+		
 		System.out.println("Printing course list of student");
 		for(Course tempCourse : s.getCourseList()){
 			System.out.println(tempCourse.getId() + " " + tempCourse.getName());
 		}
-	}
+		System.out.println("Printing students courses class");
+		for(Course c1 : s.getCourseList()){
+			System.out.println(s.getName() + " enrolled in " + cc.getName());
+		}
+		}
+	
 	public static void viewAllStudents(){
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
 			System.out.println("id: " +s.getId() + "\tname: " + s.getName());
