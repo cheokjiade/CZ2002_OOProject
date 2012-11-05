@@ -8,12 +8,12 @@ import java.util.Set;
 public class Course {
 	private String name;
 	private String id;
-	private Set<Student> studentList;
+	private List<Student> studentList;
 	private Professor professor;
 	public Course(String name, String id) {
 		this.name = name;
 		this.id = id;
-		studentList = new HashSet<Student>();
+		studentList = new ArrayList<Student>();
 		
 	}
 	public String getName() {
@@ -28,10 +28,10 @@ public class Course {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public Set<Student> getStudentList() {
+	public List<Student> getStudentList() {
 		return studentList;
 	}
-	public void setStudentList(Set<Student> studentList) {
+	public void setStudentList(List<Student> studentList) {
 		this.studentList = studentList;
 	}
 	public Professor getProfessor() {

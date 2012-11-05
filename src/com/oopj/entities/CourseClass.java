@@ -7,12 +7,14 @@ public abstract class CourseClass {
 	private int maxSize;
 	private String id;
 	private String name;
+	private String type;
 	private Course parentCourse;
 	private List<Student> studentList;
-	public CourseClass(int maxSize, String id, String name, Course parentCourse) {
+	public CourseClass(int maxSize, String id, String name, String type, Course parentCourse) {
 		this.maxSize = maxSize;
 		this.id = id;
 		this.name = name;
+		this.type = type;
 		this.parentCourse = parentCourse;
 	}
 	public int getMaxSize() {
@@ -44,6 +46,12 @@ public abstract class CourseClass {
 	}
 	public void setStudentList(List<Student> studentList) {
 		this.studentList = studentList;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }
