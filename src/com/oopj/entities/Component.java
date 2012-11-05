@@ -10,6 +10,17 @@ public class Component {
 	private int weightage;
 	
 	private CourseWork parentCourseWork;
+	private List<Result> resultList;
+	
+	public Component(String id, String name, int totalScore, int weightage){
+		this.setId(id);
+		this.setName(name);
+		this.setTotalScore(totalScore);
+		this.setWeightage(weightage);
+		this.resultList = new ArrayList<Result>();
+
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -58,15 +69,5 @@ public class Component {
 		this.resultList = resultList;
 	}
 
-	private List<Result> resultList;
-	
-	public Component(String id, String name, int totalScore, int weightage){
-		this.setId(id);
-		this.setName(name);
-		this.setTotalScore(totalScore);
-		this.setWeightage(weightage);
-		this.resultList = new ArrayList<Result>();
 
-	}
-	
 }

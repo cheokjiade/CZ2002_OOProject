@@ -8,8 +8,17 @@ public class CourseWork {
 	private String name;
 	private int weightage;
 	
-	private List<Component> componentList;
 	private Course parentCourse;
+	private List<Component> componentList;
+	public CourseWork(String id, String name, int weightage, Course parentCourse) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.weightage = weightage;
+		this.parentCourse = parentCourse;
+		this.componentList = new ArrayList<Component>();
+	}
+	
 
 	public String getId() {
 		return id;
@@ -43,14 +52,6 @@ public class CourseWork {
 		this.componentList = componentList;
 	}
 
-	public CourseWork(String id, String name, int weightage, Course parentCourse) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.weightage = weightage;
-		this.parentCourse = parentCourse;
-		this.componentList = new ArrayList<Component>();
-	}
 	
 
 }
