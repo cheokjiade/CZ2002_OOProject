@@ -69,7 +69,10 @@ public class main {
 			System.out.println(Integer.toString(i) + ". " + courseList.get(i).getId() + " " + courseList.get(i).getName());
 		}
 		Course c = courseList.get(sc.nextInt());
-		
+		if(c.getStudentList().contains(s)){
+			System.out.println("Student is already enrolled.");
+			return;
+		}
 		s.getCourseList().add(c);
 		c.getStudentList().add(s);
 		System.out.println("Printing course list of student");

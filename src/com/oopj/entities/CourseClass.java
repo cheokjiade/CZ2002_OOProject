@@ -8,4 +8,11 @@ public abstract class CourseClass {
 	private String name;
 	private Course parentCourse;
 	private Set<Student> studentList;
+	public CourseClass(int maxSize, String id, String name, Course parentCourse) {
+		this.maxSize = maxSize;
+		this.id = id;
+		this.name = name;
+		this.parentCourse = parentCourse;
+	}
+	
 }
