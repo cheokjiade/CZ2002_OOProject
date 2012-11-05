@@ -55,7 +55,7 @@ public class main {
 					registerStudent();
 					break;
 				case 6:
-					editExamComponent();
+					editAssessmentComponentWeightage();
 					break;
 				case 7:
 					registerStudent();
@@ -64,9 +64,12 @@ public class main {
 					registerStudent();
 					break;
 				case 11:
-					
 					Student tempS = chooseStudent();
 					if(tempS!=null) System.out.println(tempS.getId() + " " + tempS.getName());
+					break;
+				case 12:
+					Course tempC = chooseCourse();
+					if(tempC!=null) System.out.println(tempC.getId() + " " + tempC.getName());
 					break;
 				case 20:
 					viewAllStudents();
@@ -89,6 +92,7 @@ public class main {
 			System.out.println(s.getId() + " " + s.getName());
 		}
 	}
+	
 	public static void addCourse(){
 		System.out.println("Course: Input name followed by id.");
 		Course course = new Course(sc.next(), sc.next());
@@ -142,9 +146,69 @@ public class main {
 		}
 	}
 	
-	public static void editExamComponent(){
+	public static void editAssessmentComponentWeightage(){
 		System.out.println("Choose course to edit assessment componnent weightage");
+		Course tempCourse = chooseCourse();
+		System.out.printf("Exam total and weightage has %sbeen set.\n",tempCourse.getExam()==null?"not ":"");
+		System.out.printf("Coursework total and weightage has %sbeen set.\n",tempCourse.getCourseWork()==null?"not ":"");
+		int choice;
+		do{
+			System.out.println("Press 1 to edit Exam and 2 to edit Coursework. Press any other number to exit.");
+			choice = sc.nextInt();
+			if(choice==1) editExam(tempCourse);
+			else if (choice==2)editCourseWork(tempCourse);
+		} while (choice != 1 && choice != 2);
+		
+	}
+	
+	public static void editExam(Course tempCourse){
+		if(tempCourse.getExam()==null){
+			System.out.print("Please enter the total score of the exam followed by its weighted percentage : ");
+			Exam tempExam = new Exam(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), sc.nextInt(), tempCourse);
+			tempCourse.setExam(tempExam);
+			System.out.println("Total score of the exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its weighted percentage is " + Integer.toString(tempCourse.getExam().getWeightage()));
+		}else{
+			System.out.println("Current total score of the exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its weighted percentage is " + Integer.toString(tempCourse.getExam().getWeightage()));
+			System.out.print("Enter 1 to edit the Exam total marks and weightage and any other number to quit: ");
+			int choice = sc.nextInt();
+			if(choice == 1){
+				System.out.println("Please enter the total score of the exam followed by its weighted percentage ");
+				tempCourse.getExam().setTotalScore(sc.nextInt());
+				tempCourse.getExam().setWeightage(sc.nextInt());
+				System.out.println("Total score of the exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its weighted percentage is" + Integer.toString(tempCourse.getExam().getWeightage()));
+			}	
+		}
+		db.store(tempCourse);
 		//int
+	}
+	
+	public static void editCourseWork(Course tempCourse){
+		if(tempCourse.getCourseWork()==null){
+			System.out.print("Please enter the total weighted percentage of the coursework : ");
+			CourseWork tempCourseWork = new CourseWork(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), tempCourse);
+			tempCourse.setCourseWork(tempCourseWork);
+			System.out.println("Weighted percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
+		}else{
+			System.out.println("Current weighted percentage is" + Integer.toString(tempCourse.getCourseWork().getWeightage()));
+			System.out.print("Enter 1 to edit coursework total weightage : ");
+			int choice = sc.nextInt();
+			if(choice == 1){
+				System.out.print("Please enter the total weighted percentage of the coursework : ");
+				tempCourse.getCourseWork().setWeightage(sc.nextInt());
+				System.out.println("Weighted percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
+			}
+		}
+		db.store(tempCourse);
+	}
+	
+	public static void editCourseWorkComponent(Course tempCourse){
+		CourseWork tempCourseWork = tempCourse.getCourseWork();
+		
+	}
+	
+	public static void addCourseWorkComponent(Course tempCourse){
+		CourseWork tempCourseWork = tempCourse.getCourseWork();
+		
 	}
 	
 	public static Course chooseCourse(){

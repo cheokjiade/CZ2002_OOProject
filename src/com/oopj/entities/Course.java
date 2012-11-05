@@ -10,6 +10,8 @@ public class Course {
 	private String id;
 	private List<Student> studentList;
 	private List<CourseClass> courseClassList;
+	private Exam exam;
+	private CourseWork courseWork;
 	private Professor professor;
 	public Course(String name, String id) {
 		this.name = name;
@@ -46,6 +48,18 @@ public class Course {
 	}
 	public void setProfessor(Professor professor) {
 		this.professor = professor;
+	}
+	public Exam getExam() {
+		return exam;
+	}
+	public void setExam(Exam exam) {
+		this.exam = exam;
+	}
+	public CourseWork getCourseWork() {
+		return courseWork;
+	}
+	public void setCourseWork(CourseWork courseWork) {
+		this.courseWork = courseWork;
 	}
 	
 	
