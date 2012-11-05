@@ -48,13 +48,33 @@ public class main {
 				case 3:
 					registerStudent();
 					break;
+				case 4:
+					registerStudent();
+					break;
+				case 5:
+					registerStudent();
+					break;
+				case 6:
+					editExamComponent();
+					break;
+				case 7:
+					registerStudent();
+					break;
+				case 8:
+					registerStudent();
+					break;
+				case 11:
+					
+					Student tempS = chooseStudent();
+					if(tempS!=null) System.out.println(tempS.getId() + " " + tempS.getName());
+					break;
 				case 20:
 					viewAllStudents();
 					viewAllCourses();
 					break;
 					
 			}
-		}while(choice!=7);
+		}while(choice!=21);
 		db.close();
 
 	}
@@ -122,6 +142,62 @@ public class main {
 		}
 	}
 	
+	public static void editExamComponent(){
+		System.out.println("Choose course to edit assessment componnent weightage");
+		//int
+	}
+	
+	public static Course chooseCourse(){
+		int choice,pageCount=0,i;
+		boolean lastPage = false;
+		do{
+			for(i=1; pageCount*10+i-1<courseList.size()&&i<=10;i++)
+				System.out.println("("+ Integer.toString(i) +") " + courseList.get((pageCount*10+i-1)).getName()+courseList.get((pageCount*10+i-1)).getId());
+			if(i>=10&&((pageCount*10+i-1)<=courseList.size())) System.out.println("Enter 11 to see the next 10 courses");
+			else{
+				System.out.println("End of course list. Enter 0 to restart the list or -1 to exit");
+				lastPage = true;
+			}
+			choice = sc.nextInt();
+			if(choice>0&&choice<=i-1) return courseList.get((pageCount*10)+choice-1);
+			else if (choice==0){
+				pageCount=0;
+				lastPage=false;
+			}else if(choice>10){
+				if(lastPage){
+					pageCount=0;
+					lastPage=false;
+				}else pageCount++;
+			}
+		}while(choice>-1);
+		return null;
+	}
+
+	public static Student chooseStudent(){
+		int choice,pageCount=0,i;
+		boolean lastPage = false;
+		do{
+			for(i=1; pageCount*10+i-1<studentList.size()&&i<=10;i++)
+				System.out.println("("+ Integer.toString(i) +") " + studentList.get((pageCount*10+i-1)).getName()+studentList.get((pageCount*10+i-1)).getId());
+			if(i>=10&&((pageCount*10+i-1)<=studentList.size())) System.out.println("Enter 11 to see the next 10 courses");
+			else{
+				System.out.println("End of course list. Enter 0 to restart the list or -1 to exit");
+				lastPage = true;
+			}
+			choice = sc.nextInt();
+			if(choice>0&&choice<=i-1) return studentList.get((pageCount*10)+choice-1);
+			else if (choice==0){
+				pageCount=0;
+				lastPage=false;
+			}else if(choice>10){
+				if(lastPage){
+					pageCount=0;
+					lastPage=false;
+				}else pageCount++;
+			}
+		}while(choice>-1);
+		return null;
+	}
 	
 	public static void registerStudent(){
 		for (int i=0;i<studentList.size();i++){
