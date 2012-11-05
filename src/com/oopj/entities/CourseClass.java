@@ -1,7 +1,6 @@
 package com.oopj.entities;
 
 import java.util.List;
-import java.util.Set;
 
 public abstract class CourseClass {
 	private int maxSize;
