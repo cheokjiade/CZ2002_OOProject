@@ -24,6 +24,8 @@ public class main {
 		studentList = new ArrayList(studentsFromDB);
 		courseList = new ArrayList(db.query(Course.class));
 		courseClassList = new ArrayList(db.query(CourseClass.class));
+		db.query(Result.class);
+		//db.query(CourseClass.class);
 		//studentList = db.query(Student.class);
 		int choice;
 		do{
@@ -64,6 +66,9 @@ public class main {
 					break;
 				case 8:
 					addExamResult();
+					break;
+				case 9:
+					printStatistics();
 					break;
 				case 10:
 					printTranscript();
@@ -171,7 +176,7 @@ public class main {
 			choice = sc.nextInt();
 			if(choice==1) editExam(tempCourse);
 			else if (choice==2)editCourseWork(tempCourse);
-		} while (choice != 1 && choice != 2);
+		} while (choice == 1 || choice == 2);
 		
 	}
 	
@@ -252,7 +257,6 @@ public class main {
 		Student s = (Student)chooseChoosable((ArrayList)c.getStudentList());
 		if(s==null)return;
 		addResult(s, c.getExam());
-		
 	}
 	
 	public static void addCourseWorkMark(){
@@ -280,7 +284,17 @@ public class main {
 		Result r = new Result(ec.getId(), grade, s, ec);
 		s.getResultList().add(r);
 		ec.getResultList().add(r);
+		db.store(r);
 		return true;
+	}
+	
+	public static void printStatistics(){
+		System.out.println("Please select the course to view statistics for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		int actualExam, actualCourseWork, total, totalExam=0;
+		total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
+		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();
+		System.out.printf("Average actual mark for exam is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",(int)(totalExam/c.getStudentList().size()),(int)(c.getExam().getTotalScore()),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/100),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/total));
 	}
 	
 	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
@@ -396,6 +410,7 @@ public static void registerStudent(){
 					s.getCourseClassList().add(cc);
 					cc.getStudentList().add(s);
 					System.out.println("Student " + s.getName() + " of matriculation number " + s.getId() + " has successfully been enrolled to the following course:");
+					db.store(cc);
 					for(CourseClass cc1: s.getCourseClassList()){
 						String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
 						System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + "\n");
