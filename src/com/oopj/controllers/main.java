@@ -307,26 +307,11 @@ public class main {
 			return;
 		}
 
-		System.out.println("Please select the class to register for...");
-		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
-		
 		//add student to course
 		s.getCourseList().add(c);
 		c.getStudentList().add(s);
-<<<<<<< HEAD
 		
-		//add student to courseclass
-/*		c.getCourseClassList().add(cc);
-		s.getCourseClassList().add(cc);*/
-		cc.getStudentList().add(s);
 		
-		System.out.println("Printing course list of student");
-		s = (Student)chooseChoosable((ArrayList)c.getStudentList());
-		
-		System.out.println("Printing students courses class");
-	//	cc = (CourseClass)chooseChoosable((ArrayList).getCourseClassList());
-=======
-
 		for(int i=1;i<=3;i++){
 			ArrayList<CourseClass> tempCCList = new ArrayList<CourseClass>();
 			for(CourseClass tempCC: c.getCourseClassList()){ 
@@ -345,12 +330,7 @@ public class main {
 		db.store(s);
 		db.store(c);
 		
-		//System.out.println("Printing course list of student");
-		
->>>>>>> origin/june
 		}
-
-	
 	
 	
 	public static void printStudentList() {
