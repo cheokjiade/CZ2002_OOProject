@@ -3,7 +3,7 @@ package com.oopj.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Student extends Person{
+public class Student extends Person implements Choosable{
 	//private 
 	private List<Result> resultList;
 	private List<Course> courseList;
@@ -39,6 +39,12 @@ public class Student extends Person{
 
 	public void setCourseList(List<Course> courseList) {
 		this.courseList = courseList;
+	}
+
+	@Override
+	public String printString() {
+		return "ID: " + this.getId() + " Name: " + this.getName();
+		
 	}
 	
 }
