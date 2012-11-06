@@ -60,10 +60,10 @@ public class main {
 					editAssessmentComponentWeightage();
 					break;
 				case 7:
-					registerStudent();
+					addCourseWorkMark();
 					break;
 				case 8:
-					registerStudent();
+					addExamResult();
 					break;
 				case 11:
 					Student tempS = chooseStudent();
@@ -239,6 +239,46 @@ public class main {
 			
 		}while(choice==1||choice==2);
 		
+	}
+	
+	public static void addExamResult(){
+		System.out.println("Please select the course to add exam results for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		if(c==null)return;
+		if(c.getExam()==null)return;
+		System.out.println("Please select the student to add exam results for:");
+		Student s = (Student)chooseChoosable((ArrayList)c.getStudentList());
+		if(s==null)return;
+		addResult(s, c.getExam());
+		
+	}
+	
+	public static void addCourseWorkMark(){
+		System.out.println("Please select the course to add coursework marks for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		if(c==null)return;
+		System.out.println("Please select the student to add coursework results for:");
+		Student s = (Student)chooseChoosable((ArrayList)c.getStudentList());
+		if(s==null)return;
+		System.out.println("Please select the component to add marks for:");
+		Component com = (Component)chooseChoosable((ArrayList)c.getCourseWork().getComponent());
+		addResult(s, com);
+		db.store(s);
+		db.store(c);
+	}
+	
+	public static boolean addResult(Student s, ExamComponent ec){
+		for(Result r : s.getResultList()){
+			if(r.getParentExamComponent().equals(ec)) return false;
+		}
+		System.out.printf("Maximum grade for %s is %d. Please enter grade for %s : ",ec.getName(),ec.getTotalScore(),s.getName());
+		int grade = sc.nextInt();
+		if(grade>ec.getTotalScore()) grade = ec.getTotalScore();
+		else if (grade<0) grade = 0;
+		Result r = new Result(ec.getId(), grade, s, ec);
+		s.getResultList().add(r);
+		ec.getResultList().add(r);
+		return true;
 	}
 	
 	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
