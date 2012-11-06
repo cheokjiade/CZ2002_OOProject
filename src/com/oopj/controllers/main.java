@@ -54,7 +54,7 @@ public class main {
 					registerStudent();
 					break;
 				case 5:
-					registerStudent();
+					printStudentList();
 					break;
 				case 6:
 					editAssessmentComponentWeightage();
@@ -332,6 +332,21 @@ public class main {
 			System.out.println(s.getName() + " enrolled in " + cc.getName());
 		}
 		}
+	
+	
+	
+	public static void printStudentList() {
+		System.out.println("Please select the course to display: ");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		System.out.println("Please select the course class to display: ");
+		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
+		for (Student s : cc.getStudentList())
+			System.out.println(s.getId() + s.getName());
+		
+	}
+	
+	
+	
 	
 	public static void viewAllStudents(){
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
