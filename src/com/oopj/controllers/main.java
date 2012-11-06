@@ -65,6 +65,8 @@ public class main {
 				case 8:
 					addExamResult();
 					break;
+				case 10:
+					printTranscript();
 				case 11:
 					Student tempS = chooseStudent();
 					if(tempS!=null) System.out.println(tempS.getId() + " " + tempS.getName());
@@ -425,6 +427,18 @@ public static void registerStudent(){
 		for (Student s: cc.getStudentList())
 		System.out.println("Id: " + s.getId() +"\tName: " + s.getName());
 		
+	}
+	
+	public static void printTranscript() {
+		System.out.println("Please select student ID to display transcript: ");
+		Student s = (Student)chooseChoosable((ArrayList)studentList);
+		
+		System.out.println(s.getResultList());
+		
+		
+		System.out.println("Name: " + s.getName());
+		System.out.println("ID: " + s.getId());
+			
 	}
 	
 	public static void viewAllStudents(){
