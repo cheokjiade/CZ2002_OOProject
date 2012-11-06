@@ -193,14 +193,17 @@ public class main {
 			CourseWork tempCourseWork = new CourseWork(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), tempCourse);
 			tempCourse.setCourseWork(tempCourseWork);
 			System.out.println("Weighted percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
+			editCourseWorkComponent(tempCourse);
 		}else{
 			System.out.println("Current weighted percentage is" + Integer.toString(tempCourse.getCourseWork().getWeightage()));
-			System.out.print("Enter 1 to edit coursework total weightage : ");
+			System.out.print("Enter 1 to edit coursework total weightage or 2 to edit coursework components : ");
 			int choice = sc.nextInt();
 			if(choice == 1){
 				System.out.print("Please enter the total weighted percentage of the coursework : ");
 				tempCourse.getCourseWork().setWeightage(sc.nextInt());
 				System.out.println("Weighted percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
+			}else if(choice == 2){
+				editCourseWorkComponent(tempCourse);
 			}
 		}
 		db.store(tempCourse);
@@ -208,11 +211,26 @@ public class main {
 	
 	public static void editCourseWorkComponent(Course tempCourse){
 		CourseWork tempCourseWork = tempCourse.getCourseWork();
-		
-	}
-	
-	public static void addCourseWorkComponent(Course tempCourse){
-		CourseWork tempCourseWork = tempCourse.getCourseWork();
+		int choice;
+		do{
+			System.out.printf("There are currently %d components.\nDo you want to 1. Add a new component%s?\n",tempCourseWork.getComponent().size(),tempCourseWork.getComponent().size()==0?"":" or 2. Edit a component");
+			choice = sc.nextInt();
+			if(choice==1){
+				System.out.print("Please enter component name, total mark and weighted percentage. ");
+				Component c = new Component(tempCourse.getId(), sc.next(), sc.nextInt(), sc.nextInt(), tempCourseWork);
+				tempCourseWork.getComponent().add(c);
+				db.store(tempCourse);
+			} else if (choice ==2 && tempCourseWork.getComponent().size()>0){
+				Component c = (Component)chooseChoosable((ArrayList)tempCourseWork.getComponent());
+				if(c==null) continue;
+				System.out.print("Please enter updated component name, total mark and weighted percentage. ");
+				c.setName(sc.next());
+				c.setTotalScore(sc.nextInt());
+				c.setWeightage(sc.nextInt());
+				db.store(tempCourse);
+			}
+			
+		}while(choice==1||choice==2);
 		
 	}
 	

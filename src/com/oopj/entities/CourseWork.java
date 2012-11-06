@@ -3,7 +3,7 @@ package com.oopj.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseWork {
+public class CourseWork implements Choosable{
 	private String id;
 	private String name;
 	private int weightage;
@@ -50,6 +50,12 @@ public class CourseWork {
 
 	public void setComponent(List<Component> componentList) {
 		this.componentList = componentList;
+	}
+
+
+	@Override
+	public String printString() {
+		return "Component name: " + name + " \tWeightage:" + Integer.toString(weightage);
 	}
 
 	
