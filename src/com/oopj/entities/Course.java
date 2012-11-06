@@ -5,11 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Course {
+public class Course implements Choosable{
 	private String name;
 	private String id;
 	private List<Student> studentList;
 	private List<CourseClass> courseClassList;
+	private Exam exam;
+	private CourseWork courseWork;
 	private Professor professor;
 	public Course(String name, String id) {
 		this.name = name;
@@ -47,6 +49,22 @@ public class Course {
 	public void setProfessor(Professor professor) {
 		this.professor = professor;
 	}
-	
+	public Exam getExam() {
+		return exam;
+	}
+	public void setExam(Exam exam) {
+		this.exam = exam;
+	}
+	public CourseWork getCourseWork() {
+		return courseWork;
+	}
+	public void setCourseWork(CourseWork courseWork) {
+		this.courseWork = courseWork;
+	}
+	@Override
+	public String printString() {
+		return "ID: " + this.getId() + " Name: " + this.getName();
+		
+	}
 	
 }
