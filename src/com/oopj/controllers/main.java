@@ -316,10 +316,10 @@ public static void registerStudent(){
 		
 		System.out.println("Select student to register: ");
 		Student s = (Student)chooseChoosable((ArrayList)studentList); 
-		
+		if(s==null)return;
 		System.out.println("Select course to register student into: ");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
-		
+		if(c==null)return;
 		if(c.getStudentList().contains(s)){
 			System.out.println("Student is already enrolled.");
 			return;
@@ -339,6 +339,7 @@ public static void registerStudent(){
 			if(tempCCList.size()>0){
 				System.out.println("Please select the class to register for...");
 				CourseClass cc = (CourseClass)chooseChoosable((ArrayList)tempCCList);
+				if(cc==null) return;
 				s.getCourseClassList().add(cc);
 				cc.getStudentList().add(s);
 			}
@@ -352,10 +353,10 @@ public static void registerStudent(){
 	public static void printStudentList() {
 		System.out.println("Please select the course to display: ");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
-		
+		if(c==null)return;
 		System.out.println("Please select the course class to display: ");
 		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
-		
+		if(cc==null)return;
 		System.out.println("Printing course list of student in this course class");
 		
 		for (Student s: cc.getStudentList())

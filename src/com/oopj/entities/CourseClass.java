@@ -1,5 +1,6 @@
 package com.oopj.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseClass implements Choosable  {
@@ -15,6 +16,7 @@ public class CourseClass implements Choosable  {
 		this.name = name;
 		this.type = type;
 		this.parentCourse = parentCourse;
+		studentList = new ArrayList<Student>();
 	}
 	public int getMaxSize() {
 		return maxSize;
