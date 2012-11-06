@@ -428,7 +428,8 @@ public static void registerStudent(){
 		
 		db.store(s);
 		db.store(c);
-		
+		db.store(c.getStudentList());
+		db.store(c.getCourseClassList());
 		}
 
 
