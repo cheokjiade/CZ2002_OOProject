@@ -216,19 +216,19 @@ public class main {
 		
 	}
 	
-	public static Choosable chooseChoosable(ArrayList<Object> choosableList){
+	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
 		int choice,pageCount=0,i;
 		boolean lastPage = false;
 		do{
 			for(i=1; pageCount*10+i-1<choosableList.size()&&i<=10;i++)
-				System.out.println("("+ Integer.toString(i) +") " + ((Choosable)choosableList.get((pageCount*10+i-1))).printString());
+				System.out.println("("+ Integer.toString(i) +") " + (choosableList.get((pageCount*10+i-1))).printString());
 			if(i>=10&&((pageCount*10+i-1)<=choosableList.size())) System.out.println("Enter 11 to see the next 10 courses");
 			else{
 				System.out.println("End of course list. Enter 0 to restart the list or -1 to exit");
 				lastPage = true;
 			}
 			choice = sc.nextInt();
-			if(choice>0&&choice<=i-1) return (Choosable)choosableList.get((pageCount*10)+choice-1);
+			if(choice>0&&choice<=i-1) return choosableList.get((pageCount*10)+choice-1);
 			else if (choice==0){
 				pageCount=0;
 				lastPage=false;
