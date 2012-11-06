@@ -297,40 +297,32 @@ public class main {
 	public static void registerStudent(){
 		
 		System.out.println("Select student to register: ");
-		//Student s = studentList.get(sc.nextInt());
 		Student s = (Student)chooseChoosable((ArrayList)studentList); 
 		
 		System.out.println("Select course to register student into: ");
-		//Course c = courseList.get(sc.nextInt());
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
 		if(c.getStudentList().contains(s)){
 			System.out.println("Student is already enrolled.");
 			return;
 		}
+
+		System.out.println("Please select the class to register for...");
+		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
 		
 		//add student to course
 		s.getCourseList().add(c);
 		c.getStudentList().add(s);
-
-
 		
-		System.out.println("Please select the class to register for...");
-//		  for (int i=0;i<c.getCourseClassList().size();i++){
-//		   System.out.println(Integer.toString(i) + ". " + c.getCourseClassList().get(i).getId() + " " + c.getCourseClassList().get(i).getName());
-//		  }
-		//CourseClass cc = c.getCourseClassList().get(sc.nextInt());
-		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
-		c.getCourseClassList().add(cc);
-
+		//add student to courseclass
+/*		c.getCourseClassList().add(cc);
+		s.getCourseClassList().add(cc);*/
+		//cc.getStudentList().add(s);
 		
 		System.out.println("Printing course list of student");
-		for(Course tempCourse : s.getCourseList()){
-			System.out.println(tempCourse.getId() + " " + tempCourse.getName());
-		}
+		s = (Student)chooseChoosable((ArrayList)c.getStudentList());
+		
 		System.out.println("Printing students courses class");
-		for(Course c1 : s.getCourseList()){
-			System.out.println(s.getName() + " enrolled in " + cc.getName());
-		}
+	//	cc = (CourseClass)chooseChoosable((ArrayList).getCourseClassList());
 		}
 	
 	
