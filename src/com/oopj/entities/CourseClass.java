@@ -2,7 +2,7 @@ package com.oopj.entities;
 
 import java.util.List;
 
-public class CourseClass {
+public class CourseClass implements Choosable  {
 	private int maxSize;
 	private String id;
 	private String name;
@@ -51,6 +51,10 @@ public class CourseClass {
 	}
 	public void setType(int type) {
 		this.type = type;
+	}
+	@Override
+	public String printString() {
+		return "ID: " + this.getId() + " Name: " + this.getName() + " Vacancies: " + Integer.toString(maxSize - (this.getStudentList()==null?0:this.getStudentList().size()));
 	}
 	
 }
