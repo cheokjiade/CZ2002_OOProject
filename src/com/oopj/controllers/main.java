@@ -67,14 +67,11 @@ public class main {
 				case 8:
 					addExamResult();
 					break;
-<<<<<<< HEAD
 				case 9:
 					printStatistics();
 					break;
-=======
 				case 10:
 					printTranscript();
->>>>>>> origin/master
 				case 11:
 					Student tempS = chooseStudent();
 					if(tempS!=null) System.out.println(tempS.getId() + " " + tempS.getName());
