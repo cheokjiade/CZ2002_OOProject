@@ -407,8 +407,6 @@ public static void registerStudent(){
 				else {
 					s.getCourseClassList().add(cc);
 					cc.getStudentList().add(s);
-<<<<<<< HEAD
-=======
 					System.out.println("Student " + s.getName() + " of matriculation number " + s.getId() + " has successfully been enrolled to the following course:");
 					db.store(cc);
 					for(CourseClass cc1: s.getCourseClassList()){
@@ -416,7 +414,6 @@ public static void registerStudent(){
 						System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + "\n");
 			
 					}
->>>>>>> master
 				}
 			}
 		}
