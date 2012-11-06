@@ -301,6 +301,7 @@ public class main {
 		
 		System.out.println("Select course to register student into: ");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		
 		if(c.getStudentList().contains(s)){
 			System.out.println("Student is already enrolled.");
 			return;
@@ -312,6 +313,7 @@ public class main {
 		//add student to course
 		s.getCourseList().add(c);
 		c.getStudentList().add(s);
+<<<<<<< HEAD
 		
 		//add student to courseclass
 /*		c.getCourseClassList().add(cc);
@@ -323,7 +325,31 @@ public class main {
 		
 		System.out.println("Printing students courses class");
 	//	cc = (CourseClass)chooseChoosable((ArrayList).getCourseClassList());
+=======
+
+		for(int i=1;i<=3;i++){
+			ArrayList<CourseClass> tempCCList = new ArrayList<CourseClass>();
+			for(CourseClass tempCC: c.getCourseClassList()){ 
+				if(tempCC.getType()==i) {
+					tempCCList.add(tempCC);
+				}
+			}
+			if(tempCCList.size()>0){
+				System.out.println("Please select the class to register for...");
+				CourseClass cc = (CourseClass)chooseChoosable((ArrayList)tempCCList);
+				s.getCourseClassList().add(cc);
+				cc.getStudentList().add(s);
+			}
 		}
+		
+		db.store(s);
+		db.store(c);
+		
+		//System.out.println("Printing course list of student");
+		
+>>>>>>> origin/june
+		}
+
 	
 	
 	
