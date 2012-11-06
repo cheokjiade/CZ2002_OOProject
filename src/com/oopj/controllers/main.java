@@ -53,7 +53,7 @@ public class main {
 					registerStudent();
 					break;
 				case 4:
-					registerStudent();
+					printVacancy();
 					break;
 				case 5:
 					printStudentList();
@@ -419,6 +419,12 @@ public static void registerStudent(){
 				}
 			}
 		}
+		System.out.println("Student " + s.getName() + " of matriculation number " + s.getId() + " has successfully been enrolled to the following course:");
+		for(CourseClass cc1: s.getCourseClassList()){
+			String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
+			System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName());
+		}
+		System.out.println("\n");
 		
 		db.store(s);
 		db.store(c);
@@ -427,8 +433,24 @@ public static void registerStudent(){
 
 
 	public static void printVacancy(){
+		System.out.println("Choose course to view vacancy. ");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		if(c==null)return;
+
+		for(int i=1;i<=3;i++){
+			ArrayList<CourseClass> tempCCList = new ArrayList<CourseClass>();
+			for(CourseClass tempCC: c.getCourseClassList()){ 
+				if(tempCC.getType()==i) {
+					tempCCList.add(tempCC);
+					int vac = tempCC.getMaxSize() - tempCC.getStudentList().size();
+					//String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
+					System.out.println("id: "+ tempCC.getId() + " name: " + tempCC.getName() + " vacancy:" + vac + "/" + tempCC.getMaxSize()+"\n");
+
+				}
+			}
+		}
+		}
 		
-	}
 	
 	public static void printStudentList() {
 		System.out.println("Please select the course to display: ");
