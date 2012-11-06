@@ -296,17 +296,13 @@ public class main {
 	
 	public static void registerStudent(){
 		
-		for (int i=0;i<studentList.size();i++){
-			System.out.println(Integer.toString(i) + ". " + studentList.get(i).getId() + " " + studentList.get(i).getName());
-		}
 		System.out.println("Select student to register: ");
-		Student s = studentList.get(sc.nextInt());
+		//Student s = studentList.get(sc.nextInt());
+		Student s = (Student)chooseChoosable((ArrayList)studentList); 
 		
 		System.out.println("Select course to register student into: ");
-		for (int i=0;i<courseList.size();i++){
-			System.out.println(Integer.toString(i) + ". " + courseList.get(i).getId() + " " + courseList.get(i).getName());
-		}
-		Course c = courseList.get(sc.nextInt());
+		//Course c = courseList.get(sc.nextInt());
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
 		if(c.getStudentList().contains(s)){
 			System.out.println("Student is already enrolled.");
 			return;
@@ -319,10 +315,11 @@ public class main {
 
 		
 		System.out.println("Please select the class to register for...");
-		  for (int i=0;i<c.getCourseClassList().size();i++){
-		   System.out.println(Integer.toString(i) + ". " + c.getCourseClassList().get(i).getId() + " " + c.getCourseClassList().get(i).getName());
-		  }
-		CourseClass cc = c.getCourseClassList().get(sc.nextInt());
+//		  for (int i=0;i<c.getCourseClassList().size();i++){
+//		   System.out.println(Integer.toString(i) + ". " + c.getCourseClassList().get(i).getId() + " " + c.getCourseClassList().get(i).getName());
+//		  }
+		//CourseClass cc = c.getCourseClassList().get(sc.nextInt());
+		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
 		c.getCourseClassList().add(cc);
 
 		
