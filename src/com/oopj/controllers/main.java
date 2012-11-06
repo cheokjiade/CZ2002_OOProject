@@ -329,8 +329,6 @@ public class main {
 		db.store(s);
 		db.store(c);
 		
-		//System.out.println("Printing course list of student");
-		
 		}
 
 	
