@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Course {
+public class Course implements Choosable{
 	private String name;
 	private String id;
 	private List<Student> studentList;
@@ -61,6 +61,10 @@ public class Course {
 	public void setCourseWork(CourseWork courseWork) {
 		this.courseWork = courseWork;
 	}
-	
+	@Override
+	public String printString() {
+		return "ID: " + this.getId() + " Name: " + this.getName();
+		
+	}
 	
 }

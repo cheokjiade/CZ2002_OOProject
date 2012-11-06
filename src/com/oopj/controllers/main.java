@@ -73,6 +73,10 @@ public class main {
 					Course tempC = chooseCourse();
 					if(tempC!=null) System.out.println(tempC.getId() + " " + tempC.getName());
 					break;
+				case 13:
+					Student testC = (Student)chooseChoosable((ArrayList)studentList);
+					if(testC!=null) System.out.println(testC.getId() + " " + testC.getName());
+					break;
 				case 20:
 					viewAllStudents();
 					viewAllCourses();
@@ -210,6 +214,32 @@ public class main {
 	public static void addCourseWorkComponent(Course tempCourse){
 		CourseWork tempCourseWork = tempCourse.getCourseWork();
 		
+	}
+	
+	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
+		int choice,pageCount=0,i;
+		boolean lastPage = false;
+		do{
+			for(i=1; pageCount*10+i-1<choosableList.size()&&i<=10;i++)
+				System.out.println("("+ Integer.toString(i) +") " + (choosableList.get((pageCount*10+i-1))).printString());
+			if(i>=10&&((pageCount*10+i-1)<=choosableList.size())) System.out.println("Enter 11 to see the next 10 courses");
+			else{
+				System.out.println("End of course list. Enter 0 to restart the list or -1 to exit");
+				lastPage = true;
+			}
+			choice = sc.nextInt();
+			if(choice>0&&choice<=i-1) return choosableList.get((pageCount*10)+choice-1);
+			else if (choice==0){
+				pageCount=0;
+				lastPage=false;
+			}else if(choice>10){
+				if(lastPage){
+					pageCount=0;
+					lastPage=false;
+				}else pageCount++;
+			}
+		}while(choice>-1);
+		return null;
 	}
 	
 	public static Course chooseCourse(){
