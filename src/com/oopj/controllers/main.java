@@ -24,6 +24,8 @@ public class main {
 		studentList = new ArrayList(studentsFromDB);
 		courseList = new ArrayList(db.query(Course.class));
 		courseClassList = new ArrayList(db.query(CourseClass.class));
+		db.query(Result.class);
+		//db.query(CourseClass.class);
 		//studentList = db.query(Student.class);
 		int choice;
 		do{
@@ -60,10 +62,13 @@ public class main {
 					editAssessmentComponentWeightage();
 					break;
 				case 7:
-					registerStudent();
+					addCourseWorkMark();
 					break;
 				case 8:
-					registerStudent();
+					addExamResult();
+					break;
+				case 9:
+					printStatistics();
 					break;
 				case 11:
 					Student tempS = chooseStudent();
@@ -169,7 +174,7 @@ public class main {
 			choice = sc.nextInt();
 			if(choice==1) editExam(tempCourse);
 			else if (choice==2)editCourseWork(tempCourse);
-		} while (choice != 1 && choice != 2);
+		} while (choice == 1 || choice == 2);
 		
 	}
 	
@@ -239,6 +244,55 @@ public class main {
 			
 		}while(choice==1||choice==2);
 		
+	}
+	
+	public static void addExamResult(){
+		System.out.println("Please select the course to add exam results for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		if(c==null)return;
+		if(c.getExam()==null)return;
+		System.out.println("Please select the student to add exam results for:");
+		Student s = (Student)chooseChoosable((ArrayList)c.getStudentList());
+		if(s==null)return;
+		addResult(s, c.getExam());
+	}
+	
+	public static void addCourseWorkMark(){
+		System.out.println("Please select the course to add coursework marks for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		if(c==null)return;
+		System.out.println("Please select the student to add coursework results for:");
+		Student s = (Student)chooseChoosable((ArrayList)c.getStudentList());
+		if(s==null)return;
+		System.out.println("Please select the component to add marks for:");
+		Component com = (Component)chooseChoosable((ArrayList)c.getCourseWork().getComponent());
+		addResult(s, com);
+		db.store(s);
+		db.store(c);
+	}
+	
+	public static boolean addResult(Student s, ExamComponent ec){
+		for(Result r : s.getResultList()){
+			if(r.getParentExamComponent().equals(ec)) return false;
+		}
+		System.out.printf("Maximum grade for %s is %d. Please enter grade for %s : ",ec.getName(),ec.getTotalScore(),s.getName());
+		int grade = sc.nextInt();
+		if(grade>ec.getTotalScore()) grade = ec.getTotalScore();
+		else if (grade<0) grade = 0;
+		Result r = new Result(ec.getId(), grade, s, ec);
+		s.getResultList().add(r);
+		ec.getResultList().add(r);
+		db.store(r);
+		return true;
+	}
+	
+	public static void printStatistics(){
+		System.out.println("Please select the course to view statistics for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		int actualExam, actualCourseWork, total, totalExam=0;
+		total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
+		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();
+		System.out.printf("Average actual mark for exam is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",(int)(totalExam/c.getStudentList().size()),(int)(c.getExam().getTotalScore()),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/100),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/total));
 	}
 	
 	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
@@ -353,6 +407,16 @@ public static void registerStudent(){
 				else {
 					s.getCourseClassList().add(cc);
 					cc.getStudentList().add(s);
+<<<<<<< HEAD
+=======
+					System.out.println("Student " + s.getName() + " of matriculation number " + s.getId() + " has successfully been enrolled to the following course:");
+					db.store(cc);
+					for(CourseClass cc1: s.getCourseClassList()){
+						String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
+						System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + "\n");
+			
+					}
+>>>>>>> master
 				}
 			}
 		}
