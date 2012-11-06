@@ -60,10 +60,10 @@ public class main {
 					editAssessmentComponentWeightage();
 					break;
 				case 7:
-					registerStudent();
+					addCourseWorkMark();
 					break;
 				case 8:
-					registerStudent();
+					addExamResult();
 					break;
 				case 10:
 					printTranscript();
@@ -95,9 +95,12 @@ public class main {
 		Student student = new Student(sc.next(), sc.next());
 		if(studentList==null) studentList = new ArrayList<Student>();
 		studentList.add(student);
+		System.out.println(student.getId() + " - " + student.getName() + " has been added successfully!\n");
 		db.store(student);
+		
+		System.out.println("List of students:");
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
-			System.out.println(s.getId() + " " + s.getName());
+			System.out.println(s.getId() + " - " + s.getName());
 		}
 	}
 	
@@ -105,9 +108,11 @@ public class main {
 		System.out.println("Course: Input name followed by id.");
 		Course course = new Course(sc.next(), sc.next());
 		courseList.add(course);
+		System.out.println(course.getId() + " - " + course.getName() + " has been added successfully!\n");
 		
+		System.out.println("List of courses:");
 		for(Course c: courseList){//int i=0;i<studentList.size();i++
-			System.out.println(c.getId() + " " + c.getName());
+			System.out.println(c.getId() + " - " + c.getName());
 		}
 		addCourseClass(course);
 		db.store(course);
@@ -123,34 +128,36 @@ public class main {
 		
 		switch(choiceOfClass){
 			case 1:
-				System.out.println("Inserting lectures...");
+				System.out.println("Adding lectures...");
 				addClass(course, 1);
-				System.out.println("Inserting tutorials...");
+				System.out.println("Adding tutorials...");
 				addClass(course, 2);
-				System.out.println("Inserting laboratory...");
+				System.out.println("Adding laboratory...");
 				addClass(course, 3);
 				break;
 			case 2:
-				System.out.println("Inserting lectures...");
+				System.out.println("Adding lectures...");
 				addClass(course, 1);
-				System.out.println("Inserting tutorials...");
+				System.out.println("Adding tutorials...");
 				addClass(course, 2);
 				break;
 			case 3:
-				System.out.println("Inserting lectures...");
+				System.out.println("Adding lectures...");
 				addClass(course, 1);
 				break;
 		}
 	}
 	
 	public static void addClass(Course course, int type){
-		System.out.println("How many of this class type do you want to create?");
+		System.out.println("How many of classes?");
 		int classAmt = sc.nextInt();
 		for(int i =0;i<classAmt;i++){
-			System.out.println("Please enter class name, class id and class size.");
+			System.out.println("Please enter Class Name, Class Index, Class Intake Size.");
 			CourseClass tempCourseClass = new CourseClass(sc.next(), sc.next(), sc.nextInt(), type, course);
 			course.getCourseClassList().add(tempCourseClass);
 		}
+		String classType = type==1?"Lecture":type==2?"Tutorial":"Laboratory";
+		System.out.println(classAmt + " " + classType + " has been added successfully!\n");
 	}
 	
 	public static void editAssessmentComponentWeightage(){
@@ -234,6 +241,46 @@ public class main {
 			
 		}while(choice==1||choice==2);
 		
+	}
+	
+	public static void addExamResult(){
+		System.out.println("Please select the course to add exam results for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		if(c==null)return;
+		if(c.getExam()==null)return;
+		System.out.println("Please select the student to add exam results for:");
+		Student s = (Student)chooseChoosable((ArrayList)c.getStudentList());
+		if(s==null)return;
+		addResult(s, c.getExam());
+		
+	}
+	
+	public static void addCourseWorkMark(){
+		System.out.println("Please select the course to add coursework marks for:");
+		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		if(c==null)return;
+		System.out.println("Please select the student to add coursework results for:");
+		Student s = (Student)chooseChoosable((ArrayList)c.getStudentList());
+		if(s==null)return;
+		System.out.println("Please select the component to add marks for:");
+		Component com = (Component)chooseChoosable((ArrayList)c.getCourseWork().getComponent());
+		addResult(s, com);
+		db.store(s);
+		db.store(c);
+	}
+	
+	public static boolean addResult(Student s, ExamComponent ec){
+		for(Result r : s.getResultList()){
+			if(r.getParentExamComponent().equals(ec)) return false;
+		}
+		System.out.printf("Maximum grade for %s is %d. Please enter grade for %s : ",ec.getName(),ec.getTotalScore(),s.getName());
+		int grade = sc.nextInt();
+		if(grade>ec.getTotalScore()) grade = ec.getTotalScore();
+		else if (grade<0) grade = 0;
+		Result r = new Result(ec.getId(), grade, s, ec);
+		s.getResultList().add(r);
+		ec.getResultList().add(r);
+		return true;
 	}
 	
 	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
@@ -323,7 +370,7 @@ public static void registerStudent(){
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
 		if(c==null)return;
 		if(c.getStudentList().contains(s)){
-			System.out.println("Student is already enrolled.");
+			System.out.println("Student is already enrolled.\n");
 			return;
 		}
 		
@@ -341,9 +388,20 @@ public static void registerStudent(){
 			if(tempCCList.size()>0){
 				System.out.println("Please select the class to register for...");
 				CourseClass cc = (CourseClass)chooseChoosable((ArrayList)tempCCList);
-				if(cc==null) return;
-				s.getCourseClassList().add(cc);
-				cc.getStudentList().add(s);
+				if(cc==null) 
+					return;
+				if(cc.getMaxSize() - cc.getStudentList().size() == 0) //how to prompt again, while loop?
+					System.out.println(c.getId() + " " + c.getName() + " - " + cc.getName() + " " + cc.getId() + " has no more vacancy, please choose another class!\n");
+				else {
+					s.getCourseClassList().add(cc);
+					cc.getStudentList().add(s);
+					System.out.println("Student " + s.getName() + " of matriculation number " + s.getId() + " has successfully been enrolled to the following course:");
+					for(CourseClass cc1: s.getCourseClassList()){
+						String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
+						System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + "\n");
+			
+					}
+				}
 			}
 		}
 		
@@ -351,6 +409,11 @@ public static void registerStudent(){
 		db.store(c);
 		
 		}
+
+
+	public static void printVacancy(){
+		
+	}
 	
 	public static void printStudentList() {
 		System.out.println("Please select the course to display: ");
