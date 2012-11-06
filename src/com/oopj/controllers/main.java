@@ -54,7 +54,7 @@ public class main {
 					registerStudent();
 					break;
 				case 5:
-					printStudentList();
+					registerStudent();
 					break;
 				case 6:
 					editAssessmentComponentWeightage();
@@ -193,14 +193,17 @@ public class main {
 			CourseWork tempCourseWork = new CourseWork(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), tempCourse);
 			tempCourse.setCourseWork(tempCourseWork);
 			System.out.println("Weighted percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
+			editCourseWorkComponent(tempCourse);
 		}else{
 			System.out.println("Current weighted percentage is" + Integer.toString(tempCourse.getCourseWork().getWeightage()));
-			System.out.print("Enter 1 to edit coursework total weightage : ");
+			System.out.print("Enter 1 to edit coursework total weightage or 2 to edit coursework components : ");
 			int choice = sc.nextInt();
 			if(choice == 1){
 				System.out.print("Please enter the total weighted percentage of the coursework : ");
 				tempCourse.getCourseWork().setWeightage(sc.nextInt());
 				System.out.println("Weighted percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
+			}else if(choice == 2){
+				editCourseWorkComponent(tempCourse);
 			}
 		}
 		db.store(tempCourse);
@@ -208,11 +211,26 @@ public class main {
 	
 	public static void editCourseWorkComponent(Course tempCourse){
 		CourseWork tempCourseWork = tempCourse.getCourseWork();
-		
-	}
-	
-	public static void addCourseWorkComponent(Course tempCourse){
-		CourseWork tempCourseWork = tempCourse.getCourseWork();
+		int choice;
+		do{
+			System.out.printf("There are currently %d components.\nDo you want to 1. Add a new component%s?\n",tempCourseWork.getComponent().size(),tempCourseWork.getComponent().size()==0?"":" or 2. Edit a component");
+			choice = sc.nextInt();
+			if(choice==1){
+				System.out.print("Please enter component name, total mark and weighted percentage. ");
+				Component c = new Component(tempCourse.getId(), sc.next(), sc.nextInt(), sc.nextInt(), tempCourseWork);
+				tempCourseWork.getComponent().add(c);
+				db.store(tempCourse);
+			} else if (choice ==2 && tempCourseWork.getComponent().size()>0){
+				Component c = (Component)chooseChoosable((ArrayList)tempCourseWork.getComponent());
+				if(c==null) continue;
+				System.out.print("Please enter updated component name, total mark and weighted percentage. ");
+				c.setName(sc.next());
+				c.setTotalScore(sc.nextInt());
+				c.setWeightage(sc.nextInt());
+				db.store(tempCourse);
+			}
+			
+		}while(choice==1||choice==2);
 		
 	}
 	
@@ -296,56 +314,45 @@ public class main {
 	
 	public static void registerStudent(){
 		
+		for (int i=0;i<studentList.size();i++){
+			System.out.println(Integer.toString(i) + ". " + studentList.get(i).getId() + " " + studentList.get(i).getName());
+		}
 		System.out.println("Select student to register: ");
-		Student s = (Student)chooseChoosable((ArrayList)studentList); 
+		Student s = studentList.get(sc.nextInt());
 		
 		System.out.println("Select course to register student into: ");
-		Course c = (Course)chooseChoosable((ArrayList)courseList);
-		
+		for (int i=0;i<courseList.size();i++){
+			System.out.println(Integer.toString(i) + ". " + courseList.get(i).getId() + " " + courseList.get(i).getName());
+		}
+		Course c = courseList.get(sc.nextInt());
 		if(c.getStudentList().contains(s)){
 			System.out.println("Student is already enrolled.");
 			return;
 		}
-
+		
 		//add student to course
 		s.getCourseList().add(c);
 		c.getStudentList().add(s);
+
+
 		
+		System.out.println("Please select the class to register for...");
+		  for (int i=0;i<c.getCourseClassList().size();i++){
+		   System.out.println(Integer.toString(i) + ". " + c.getCourseClassList().get(i).getId() + " " + c.getCourseClassList().get(i).getName());
+		  }
+		CourseClass cc = c.getCourseClassList().get(sc.nextInt());
+		c.getCourseClassList().add(cc);
+
 		
-		for(int i=1;i<=3;i++){
-			ArrayList<CourseClass> tempCCList = new ArrayList<CourseClass>();
-			for(CourseClass tempCC: c.getCourseClassList()){ 
-				if(tempCC.getType()==i) {
-					tempCCList.add(tempCC);
-				}
-			}
-			if(tempCCList.size()>0){
-				System.out.println("Please select the class to register for...");
-				CourseClass cc = (CourseClass)chooseChoosable((ArrayList)tempCCList);
-				s.getCourseClassList().add(cc);
-				cc.getStudentList().add(s);
-			}
+		System.out.println("Printing course list of student");
+		for(Course tempCourse : s.getCourseList()){
+			System.out.println(tempCourse.getId() + " " + tempCourse.getName());
 		}
-		
-		db.store(s);
-		db.store(c);
-		
+		System.out.println("Printing students courses class");
+		for(Course c1 : s.getCourseList()){
+			System.out.println(s.getName() + " enrolled in " + cc.getName());
 		}
-	
-	
-	public static void printStudentList() {
-		System.out.println("Please select the course to display: ");
-		Course c = (Course)chooseChoosable((ArrayList)courseList);
-		
-		System.out.println("Please select the course class to display: ");
-		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
-		
-		System.out.println("Printing course list of student in this course class");
-		
-		for (Student s: cc.getStudentList())
-		System.out.println("Id: " + s.getId() +"\tName: " + s.getName());
-		
-	}
+		}
 	
 	public static void viewAllStudents(){
 		for(Student s: studentList){//int i=0;i<studentList.size();i++

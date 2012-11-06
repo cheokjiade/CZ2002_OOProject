@@ -15,11 +15,6 @@ public class Student extends Person implements Choosable{
 		this.resultList = new ArrayList<Result>();
 		courseList = new ArrayList<Course>();
 		courseClassList = new ArrayList<CourseClass>();
-<<<<<<< HEAD
-		
-		//courseClassList = new ArrayList<CourseClass>();
-=======
->>>>>>> origin/june
 	}
 
 	public List<Result> getResultList() {
