@@ -13,8 +13,8 @@ public class Student extends Person implements Choosable{
 		this.setName(name);
 		this.setId(id);
 		this.resultList = new ArrayList<Result>();
-		this.courseList = new ArrayList<Course>();
-		this.courseClassList = new ArrayList<CourseClass>();
+		courseList = new ArrayList<Course>();
+		courseClassList = new ArrayList<CourseClass>();
 	}
 
 	public List<Result> getResultList() {
