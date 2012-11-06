@@ -316,7 +316,7 @@ public class main {
 		//add student to courseclass
 /*		c.getCourseClassList().add(cc);
 		s.getCourseClassList().add(cc);*/
-		//cc.getStudentList().add(s);
+		cc.getStudentList().add(s);
 		
 		System.out.println("Printing course list of student");
 		s = (Student)chooseChoosable((ArrayList)c.getStudentList());
@@ -330,15 +330,16 @@ public class main {
 	public static void printStudentList() {
 		System.out.println("Please select the course to display: ");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
+		
 		System.out.println("Please select the course class to display: ");
 		CourseClass cc = (CourseClass)chooseChoosable((ArrayList)c.getCourseClassList());
-		for (Student s : cc.getStudentList())
-			System.out.println(s.getId() + s.getName());
+		
+		System.out.println("Printing course list of student in this course class");
+		
+		for (Student s: cc.getStudentList())
+		System.out.println("Id: " + s.getId() +"\tName: " + s.getName());
 		
 	}
-	
-	
-	
 	
 	public static void viewAllStudents(){
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
