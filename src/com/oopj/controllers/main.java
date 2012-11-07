@@ -444,8 +444,8 @@ public static void registerStudent(){
 				if(tempCC.getType()==i) {
 					tempCCList.add(tempCC);
 					int vac = tempCC.getMaxSize() - tempCC.getStudentList().size();
-					//String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
-					System.out.println("id: "+ tempCC.getId() + " name: " + tempCC.getName() + " vacancy:" + vac + "/" + tempCC.getMaxSize()+"\n");
+					String classType = tempCC.getType()==1?"Lecture":tempCC.getType()==2?"Tutorial":"Laboratory";
+					System.out.println(classType + " index: "+ tempCC.getId() + " name: " + tempCC.getName() + " vacancy:" + vac + "/" + tempCC.getMaxSize());
 
 				}
 			}
