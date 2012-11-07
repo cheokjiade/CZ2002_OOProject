@@ -21,10 +21,11 @@ public class main {
 	public static void main(String[] args) {
 		//Person person = new Student("a", "a");
 		List <Student> studentsFromDB = db.query(Student.class);
+		List <Result> resultList = new ArrayList(db.query(Result.class));
 		studentList = new ArrayList(studentsFromDB);
 		courseList = new ArrayList(db.query(Course.class));
 		courseClassList = new ArrayList(db.query(CourseClass.class));
-		db.query(Result.class);
+		
 		//db.query(CourseClass.class);
 		//studentList = db.query(Student.class);
 		int choice;
@@ -284,7 +285,8 @@ public class main {
 		Result r = new Result(ec.getId(), grade, s, ec);
 		s.getResultList().add(r);
 		ec.getResultList().add(r);
-		db.store(r);
+		db.store(s);
+		db.store(s.getResultList());
 		return true;
 	}
 	
