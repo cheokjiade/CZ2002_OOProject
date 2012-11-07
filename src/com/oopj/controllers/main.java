@@ -73,6 +73,7 @@ public class main {
 				break;
 			case 10:
 				printTranscript();
+				break;
 			case 11:
 				Student tempS = (Student)chooseChoosable((ArrayList)studentList);
 				if(tempS!=null) System.out.println(tempS.getId() + " " + tempS.getName());
@@ -438,13 +439,14 @@ public class main {
 			System.out.println("Results for course: " + c.getName() + "...");
 
 			for (Result r: s.getResultList()) {
-				//int score = r.getScore();
-				System.out.println("Score for " + r.getParentExamComponent().getName() + " " + r.getScore() + " out of " + r.getParentExamComponent().getTotalScore());
-
-				totalCourseGrade = totalCourseGrade + ((r.getScore()/r.getParentExamComponent().getTotalScore())* r.getParentExamComponent().getWeightage());
+				int score = r.getScore();
+				double weightage = r.getParentExamComponent().getWeightage();
+				double totalScore = r.getParentExamComponent().getTotalScore();
+				
+				System.out.println("Score for " + r.getParentExamComponent().getName() + " " + r.getScore() + " out of " + r.getParentExamComponent().getTotalScore() +  " with weightage " + weightage);
+				
+				totalCourseGrade += ((score/totalScore) * (weightage));
 			}
-
-			totalCourseGrade = (totalCourseGrade*100);
 
 			computeGrade(totalCourseGrade);
 
@@ -452,7 +454,7 @@ public class main {
 
 	}
 
-	public static String computeGrade(double totalCourseGrade) {
+	public static void computeGrade(double totalCourseGrade) {
 		String grade;
 
 		if (totalCourseGrade > 80)
@@ -463,8 +465,7 @@ public class main {
 			grade = "C";
 		else
 			grade = "D";
-
-		return "Grade:" + grade;
+		System.out.print("Grade: " + grade);
 	} 
 
 	/*		for (Course c: s.getCourseList()) {
