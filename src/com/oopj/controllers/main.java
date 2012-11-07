@@ -468,16 +468,58 @@ public static void registerStudent(){
 	}
 	
 	public static void printTranscript() {
+		
 		System.out.println("Please select student ID to display transcript: ");
 		Student s = (Student)chooseChoosable((ArrayList)studentList);
 		
-		System.out.println(s.getResultList());
+		double totalCourseGrade = 0.00;
 		
+		for (Course c: s.getCourseList()) {
+			System.out.println("Results for course: " + c.getName() + "...");
 		
-		System.out.println("Name: " + s.getName());
-		System.out.println("ID: " + s.getId());
+			for (Result r: s.getResultList()) {
+				//int score = r.getScore();
+				System.out.println("Score for " + r.getParentExamComponent().getName() + " " + r.getScore() + " out of " + r.getParentExamComponent().getTotalScore());
+				
+				totalCourseGrade = totalCourseGrade + ((r.getScore()/r.getParentExamComponent().getTotalScore())* r.getParentExamComponent().getWeightage());
+			}
 			
+			totalCourseGrade = (totalCourseGrade*100);
+			
+			computeGrade(totalCourseGrade);
+		
+		}
+		
 	}
+	
+	public static String computeGrade(double totalCourseGrade) {
+		String grade;
+		
+		if (totalCourseGrade > 80)
+			grade = "A";
+		else if (totalCourseGrade < 80 && totalCourseGrade > 60)
+			grade = "B";
+		else if (totalCourseGrade < 60 && totalCourseGrade > 50)
+			grade = "C";
+		else
+			grade = "D";
+		
+		return "Grade:" + grade;
+	} 
+		
+/*		for (Course c: s.getCourseList()) {
+			
+			for (CourseClass cc: c.getCourseClassList()) {
+				for (Result r: s.getResultList()
+			}
+		}
+		
+*/		
+//		System.out.println(s.getResultList());
+		
+//		System.out.println("Name: " + s.getName());
+//		System.out.println("ID: " + s.getId());
+
 	
 	public static void viewAllStudents(){
 		for(Student s: studentList){//int i=0;i<studentList.size();i++
