@@ -99,6 +99,11 @@ public class main {
 	public static void addStudent(){
 		System.out.println("Student : Input name followed by id.");
 		Student student = new Student(sc.next(), sc.next());
+		for(Student s: studentList) 
+			if(s.getId().equals(student.getId())){
+				System.out.println("ID already exist.");
+				return;
+			}
 		if(studentList==null) studentList = new ArrayList<Student>();
 		studentList.add(student);
 		System.out.println(student.getId() + " - " + student.getName() + " has been added successfully!\n");
@@ -113,6 +118,11 @@ public class main {
 	public static void addCourse(){
 		System.out.println("Course: Input name followed by id.");
 		Course course = new Course(sc.next(), sc.next());
+		for(Course c: courseList) 
+			if(c.getId().equals(course.getId())){
+				System.out.println("ID already exist.");
+				return;
+			}
 		courseList.add(course);
 		System.out.println(course.getId() + " - " + course.getName() + " has been added successfully!\n");
 
