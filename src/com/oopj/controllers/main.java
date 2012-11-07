@@ -308,6 +308,11 @@ public class main {
 		total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
 		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();
 		System.out.printf("Average actual mark for exam is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",(int)(totalExam/c.getStudentList().size()),(int)(c.getExam().getTotalScore()),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/100),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/total));
+		for(Component com: c.getCourseWork().getComponent()){
+			int totalComponent=0;
+			for(Result r : com.getResultList()) totalComponent+=r.getScore();
+			System.out.printf("Average actual mark for %s is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",com.getName(),(int)(totalComponent/c.getStudentList().size()),(int)(com.getTotalScore()),(int)(totalComponent/c.getStudentList().size()*com.getWeightage()/100),(int)(totalComponent/c.getStudentList().size()*com.getWeightage()/total));
+		}
 	}
 
 	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
