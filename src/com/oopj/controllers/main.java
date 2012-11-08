@@ -514,17 +514,6 @@ public class main {
 			System.out.printf("Final Mark: %d/100 Final Grade: %s",studentCourseTotalMark, computeGrade(studentCourseTotalMark));
 			System.out.println();
 			System.out.println();
-			/*for (Result r: s.getResultList()) {
-				int score = r.getScore();
-				double weightage = r.getParentExamComponent().getWeightage();
-				double totalScore = r.getParentExamComponent().getTotalScore();
-				
-				System.out.println("Score for " + r.getParentExamComponent().getName() + " " + r.getScore() + " out of " + r.getParentExamComponent().getTotalScore() +  " with weightage " + weightage);
-				
-				totalCourseGrade += ((score/totalScore) * (weightage));
-			}
-
-			computeGrade(totalCourseGrade);*/
 
 		}
 
