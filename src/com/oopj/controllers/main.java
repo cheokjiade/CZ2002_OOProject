@@ -449,9 +449,37 @@ public class main {
 		double totalCourseGrade = 0.00;
 
 		for (Course c: s.getCourseList()) {
+			int actualExam, actualCourseWork, total, totalExam=0, totalCourseWorkWeight=0, studentCourseTotalMark=0;
+			for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();
+			total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
 			System.out.println("Results for course: " + c.getName() + "...");
-
-			for (Result r: s.getResultList()) {
+			Result examResult = null;
+			for(Result r:c.getExam().getResultList())
+				if(r.getParentStudent().equals(s)){
+					examResult=r;
+					break;
+				}
+			if(examResult==null)return;
+			int adjustedExam = (int)((double)examResult.getScore()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
+			System.out.printf("Exam:\t\tActual: %d/%d\tAdjusted:%d/%d\n",examResult.getScore(),c.getExam().getTotalScore(),adjustedExam,(int)((double)c.getExam().getWeightage()/(double)total*100));
+			System.out.println("\nCoursework breakdown:");
+			for(Component com:c.getCourseWork().getComponent()){
+				Result comResult = null;
+				for(Result r:com.getResultList())
+					if(r.getParentStudent().equals(s)){
+						comResult=r;
+						break;
+					}
+				int adjustedResult = (int)((double)comResult.getScore()/(double)com.getTotalScore() * (double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
+				studentCourseTotalMark += adjustedResult;
+				int adjustedTotal = (int)((double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
+				System.out.printf("%s:\t\tActual: %d/%d\tAdjusted:%d/%d\n",com.getName(),comResult.getScore(),com.getTotalScore(),adjustedResult,adjustedTotal);
+			}
+			studentCourseTotalMark += adjustedExam;
+			System.out.printf("Final Mark: %d/100 Final Grade: %s",studentCourseTotalMark, computeGrade(studentCourseTotalMark));
+			System.out.println();
+			System.out.println();
+			/*for (Result r: s.getResultList()) {
 				int score = r.getScore();
 				double weightage = r.getParentExamComponent().getWeightage();
 				double totalScore = r.getParentExamComponent().getTotalScore();
@@ -461,13 +489,13 @@ public class main {
 				totalCourseGrade += ((score/totalScore) * (weightage));
 			}
 
-			computeGrade(totalCourseGrade);
+			computeGrade(totalCourseGrade);*/
 
 		}
 
 	}
 
-	public static void computeGrade(double totalCourseGrade) {
+	public static String computeGrade(double totalCourseGrade) {
 		String grade;
 
 		if (totalCourseGrade > 80)
@@ -478,7 +506,8 @@ public class main {
 			grade = "C";
 		else
 			grade = "D";
-		System.out.print("Grade: " + grade);
+		return grade;
+		//System.out.print("Grade: " + grade);
 	} 
 
 	/*		for (Course c: s.getCourseList()) {
