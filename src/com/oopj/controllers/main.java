@@ -321,9 +321,9 @@ public class main {
 		do{
 			for(i=1; pageCount*10+i-1<choosableList.size()&&i<=10;i++)
 				System.out.println("("+ Integer.toString(i) +") " + (choosableList.get((pageCount*10+i-1))).printString());
-			if(i>=10&&((pageCount*10+i-1)<=choosableList.size())) System.out.println("Enter 11 to see the next 10 courses");
+			if(i>=10&&((pageCount*10+i-1)<=choosableList.size())) System.out.println("Enter 11 to see the next 10 "+ choosableList.get(0).getClass().getSimpleName());
 			else{
-				System.out.println("End of course list. Enter 0 to restart the list or -1 to exit");
+				System.out.println("End of "+ choosableList.get(0).getClass().getSimpleName()+" list. Enter 0 to restart the list or -1 to exit");
 				lastPage = true;
 			}
 			choice = sc.nextInt();
