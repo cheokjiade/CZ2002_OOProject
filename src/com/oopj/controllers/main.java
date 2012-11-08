@@ -16,6 +16,7 @@ public class main {
 	public static List<Student> studentList;//= new ArrayList<Student>();
 	public static List<Course> courseList;// =  new ArrayList<Course>();
 	public static List<CourseClass> courseClassList;
+	public static List<Professor> professorList;
 	static Scanner sc;
 	static ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded .newConfiguration(), "temp.db");
 	public static void main(String[] args) {
@@ -26,6 +27,7 @@ public class main {
 		studentList = new ArrayList(studentsFromDB);
 		courseList = new ArrayList(db.query(Course.class));
 		courseClassList = new ArrayList(db.query(CourseClass.class));
+		professorList = new ArrayList(db.query(Professor.class));
 
 		//db.query(CourseClass.class);
 		//studentList = db.query(Student.class);
@@ -116,6 +118,21 @@ public class main {
 			System.out.println(s.getId() + " - " + s.getName());
 		}
 	}
+	
+	public static void addProfessor(){
+		System.out.print("Add a new professor : Input name followed by id - ");
+		Professor professor = new Professor(sc.next(), sc.next());
+		for(Professor p: professorList) 
+			if(p.getId().equals(professor.getId())){
+				System.out.println("ID already exists.");
+				return;
+			}
+		if(professorList==null) professorList = new ArrayList<Professor>();
+		professorList.add(professor);
+		System.out.println("Professor " + professor.getName() + ", ID: " + professor.getId() +  " has been added successfully!\n");
+		db.store(professor);
+
+	}
 
 	public static void addCourse(){
 		System.out.print("Course: Input name followed by id - ");
@@ -125,13 +142,31 @@ public class main {
 				System.out.println("Course ID already exists.");
 				return;
 			}
+		Professor testP = null;
+		while(testP==null){
+			System.out.print("Please select Professor-in-Charge for this course:\n");
+			if (professorList.size() ==0){
+				System.out.print("There is no professor in list yet. Please add a new professor!\n");
+				addProfessor();
+			}else{
+				System.out.print("Choose a professor or cancel to add a new professor:\n");
+			}
+			testP = (Professor)chooseChoosable((ArrayList)professorList);
+			if(testP==null){
+				addProfessor();
+				//testP = (Professor)chooseChoosable((ArrayList)professorList);
+			}
+		}
+		
+		course.setProfessor(testP);
 		courseList.add(course);
-		System.out.println(course.getId() + " - " + course.getName() + " has been added successfully!\n");
+		System.out.println(course.getId() + " - " + course.getName() + " " + course.getProfessor().getName() + " has been added successfully!\n");
 
 		System.out.println("List of courses:");
 		for(Course c: courseList){//int i=0;i<studentList.size();i++
-			System.out.println(c.getId() + " - " + c.getName());
+			System.out.println("ID: " + c.getId() + " Course Name: " + c.getName() + " Professor-in-charge: " + c.getProfessor().getName());
 		}
+		System.out.print("");
 		addCourseClass(course);
 		db.store(course);
 	}
