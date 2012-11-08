@@ -22,6 +22,7 @@ public class main {
 		//Person person = new Student("a", "a");
 		List <Student> studentsFromDB = db.query(Student.class);
 		List <Result> resultList = new ArrayList(db.query(Result.class));
+		List <ExamComponent> examComponentList = new ArrayList(db.query(ExamComponent.class));
 		studentList = new ArrayList(studentsFromDB);
 		courseList = new ArrayList(db.query(Course.class));
 		courseClassList = new ArrayList(db.query(CourseClass.class));
@@ -36,7 +37,7 @@ public class main {
 			System.out.println("(4)Check Vacancy in a Class");
 			System.out.println("(5)Print student list by class type");
 			System.out.println("(6)Enter course assessment componnent weightage");
-			System.out.println("(7)enter coursework mark inclusive of its components");
+			System.out.println("(7)Enter coursework mark inclusive of its components");
 			System.out.println("(8)Enter exam mark");
 			System.out.println("(9)Print course statastic");
 			System.out.println("(10)Print transcript");
@@ -98,11 +99,11 @@ public class main {
 	}
 
 	public static void addStudent(){
-		System.out.println("Student : Input name followed by id.");
+		System.out.print("Student : Input name followed by id - ");
 		Student student = new Student(sc.next(), sc.next());
 		for(Student s: studentList) 
 			if(s.getId().equals(student.getId())){
-				System.out.println("ID already exist.");
+				System.out.println("ID already exists.");
 				return;
 			}
 		if(studentList==null) studentList = new ArrayList<Student>();
@@ -117,11 +118,11 @@ public class main {
 	}
 
 	public static void addCourse(){
-		System.out.println("Course: Input name followed by id.");
+		System.out.print("Course: Input name followed by id - ");
 		Course course = new Course(sc.next(), sc.next());
 		for(Course c: courseList) 
 			if(c.getId().equals(course.getId())){
-				System.out.println("ID already exist.");
+				System.out.println("Course ID already exists.");
 				return;
 			}
 		courseList.add(course);
@@ -298,20 +299,28 @@ public class main {
 		ec.getResultList().add(r);
 		db.store(s);
 		db.store(s.getResultList());
+		db.store(ec.getResultList());
 		return true;
 	}
 
 	public static void printStatistics(){
 		System.out.println("Please select the course to view statistics for:");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
-		int actualExam, actualCourseWork, total, totalExam=0;
+		int actualExam, actualCourseWork, total, totalExam=0, totalCourseWorkWeight=0;
+		for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();
 		total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
 		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();
-		System.out.printf("Average actual mark for exam is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",(int)(totalExam/c.getStudentList().size()),(int)(c.getExam().getTotalScore()),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/100),(int)(totalExam/c.getStudentList().size()*c.getExam().getWeightage()/total));
+		int avgExam = totalExam/c.getExam().getResultList().size();
+		int avgExamPercentage = totalExam/c.getExam().getResultList().size()*c.getExam().getWeightage()/100;
+		int avgExamWeightedPercentage = totalExam/c.getStudentList().size()*c.getExam().getWeightage()/total;
+		System.out.printf("Average actual mark for exam is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",avgExam,c.getExam().getTotalScore(),avgExamPercentage,avgExamWeightedPercentage);
 		for(Component com: c.getCourseWork().getComponent()){
 			int totalComponent=0;
 			for(Result r : com.getResultList()) totalComponent+=r.getScore();
-			System.out.printf("Average actual mark for %s is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",com.getName(),(int)(totalComponent/c.getStudentList().size()),(int)(com.getTotalScore()),(int)(totalComponent/c.getStudentList().size()*com.getWeightage()/100),(int)(totalComponent/c.getStudentList().size()*com.getWeightage()/total));
+			int avgComponent = totalComponent/com.getResultList().size();
+			int avgComponentPercentage = totalComponent/com.getResultList().size()*com.getWeightage()/100;
+			int avgComponentWeightedPercentage = totalComponent/com.getResultList().size()*com.getWeightage()/totalCourseWorkWeight*c.getCourseWork().getWeightage()/total;
+			System.out.printf("Average actual mark for %s is %d/%d. Average percentage is %d. Average weighted percentage is %d .\n",com.getName(),avgComponent,com.getTotalScore(),avgComponentPercentage,avgComponentWeightedPercentage);
 		}
 	}
 
@@ -368,8 +377,7 @@ public class main {
 			if(tempCCList.size()>0){
 				System.out.println("Please select the class to register for...");
 				CourseClass cc = (CourseClass)chooseChoosable((ArrayList)tempCCList);
-				if(cc==null) 
-					return;
+				if(cc==null) return;
 				if(cc.getMaxSize() - cc.getStudentList().size() == 0) //how to prompt again, while loop?
 					System.out.println(c.getId() + " " + c.getName() + " - " + cc.getName() + " " + cc.getId() + " has no more vacancy, please choose another class!\n");
 				else {
