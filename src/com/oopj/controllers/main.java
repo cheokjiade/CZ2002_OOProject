@@ -373,13 +373,14 @@ public class main {
 	public static void printStatistics(){
 		System.out.println("Select Course to View Statistics :");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
-		int actualExam, actualCourseWork, total, totalExam=0, totalCourseWorkWeight=0;
+		int actualExam, actualCourseWork, total, totalExam=0, totalCourseWorkWeight=0,overallAvgGrade=0;
 		for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();
 		total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
 		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();
 		int avgExam = totalExam/c.getExam().getResultList().size();
 		int avgExamPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)100);
 		int avgExamWeightedPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
+		overallAvgGrade+=avgExamWeightedPercentage;
 		System.out.printf("Average Actual Mark for Exam is %d/%d. Average Percentage is %d. Average Weighted Percentage is %d .\n",avgExam,c.getExam().getTotalScore(),avgExamPercentage,avgExamWeightedPercentage);
 		for(Component com: c.getCourseWork().getComponent()){
 			int totalComponent=0;
@@ -387,8 +388,10 @@ public class main {
 			int avgComponent = totalComponent/com.getResultList().size();
 			int avgComponentPercentage = (int) ((double)totalComponent/com.getResultList().size()/com.getTotalScore()*(double)100);
 			int avgComponentWeightedPercentage = (int) ((double)totalComponent/(double)com.getResultList().size()/(double)com.getTotalScore()*(double)100*(double)com.getWeightage()/(double)totalCourseWorkWeight*c.getCourseWork().getWeightage()/(double)total);
+			overallAvgGrade+=avgComponentWeightedPercentage;
 			System.out.printf("Average Actual Mark for %s is %d/%d. Average Percentage is %d. Average Weighted Percentage is %d .\n",com.getName(),avgComponent,com.getTotalScore(),avgComponentPercentage,avgComponentWeightedPercentage);
 		}
+		System.out.println("Overall grade percentage for " + c.getName() + " is " + Integer.toString(overallAvgGrade));
 	}
 
 	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
