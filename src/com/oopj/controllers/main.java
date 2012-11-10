@@ -17,7 +17,7 @@ public class main {
 	public static List<Course> courseList;// =  new ArrayList<Course>();
 	public static List<CourseClass> courseClassList;
 	public static List<Professor> professorList;
-	static Scanner sc;
+	static Scanner sc, strSC;
 	static ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded .newConfiguration(), "temp.db");
 	public static void main(String[] args) {
 		//Person person = new Student("a", "a");
@@ -49,6 +49,7 @@ public class main {
 			System.out.println("(10) Print Transcript\n");
 			System.out.print("Choice made:");
 			sc = new Scanner(System.in);
+			strSC = new Scanner(System.in);
 			choice = sc.nextInt();
 
 			switch(choice){
@@ -107,7 +108,8 @@ public class main {
 
 	public static void addStudent(){
 		System.out.print("Add a Student : Input Student's Name and Matriculation No. - ");
-		Student student = new Student(sc.next(), sc.next());
+		//String tempString = sc.nextLine();
+		Student student = new Student(strSC.nextLine(), sc.next());
 		for(Student s: studentList) 
 			if(s.getId().equals(student.getId())){
 				System.out.println("Student not added! Matriculation No. already exists!");
@@ -126,7 +128,7 @@ public class main {
 	
 	public static void addProfessor(){
 		System.out.print("Add a Professor : Input Professor's Name and Staff No. - ");
-		Professor professor = new Professor(sc.next(), sc.next());
+		Professor professor = new Professor(strSC.nextLine(), sc.next());
 		for(Professor p: professorList) 
 			if(p.getId().equals(professor.getId())){
 				System.out.println("Professor not added! Staff No. already exists!");
@@ -141,7 +143,7 @@ public class main {
 
 	public static void addCourse(){
 		System.out.print("Add a Course : Input Course Name and Course Index - ");
-		Course course = new Course(sc.next(), sc.next());
+		Course course = new Course(strSC.nextLine(), sc.next());
 		for(Course c: courseList) 
 			if(c.getId().equals(course.getId())){
 				System.out.println("Course not added! Course Index already exists!");
@@ -283,7 +285,7 @@ public class main {
 			choice = sc.nextInt();
 			if(choice==1){
 				System.out.print("Please Input Component's Name, Total Marks and Weighted Percentage. ");
-				Component c = new Component(tempCourse.getId(), sc.next(), sc.nextInt(), sc.nextInt(), tempCourseWork);
+				Component c = new Component(tempCourse.getId(), strSC.nextLine(), sc.nextInt(), sc.nextInt(), tempCourseWork);
 				tempCourseWork.getComponent().add(c);
 				db.store(tempCourse);
 			} else if (choice ==2 && tempCourseWork.getComponent().size()>0){
