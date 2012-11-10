@@ -483,8 +483,11 @@ public class main {
 		}
 		System.out.println("Student " + s.getName() + ", Matriculation No. " + s.getId() + " Has Successfully Been Enrolled to the Following Course:");
 		for(CourseClass cc1: s.getCourseClassList()){
-			String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
-			System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + " - " + cc1.getId());
+			if(cc1.getParentCourse().equals(c)){
+				String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
+				System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + " - " + cc1.getId());
+			}
+			
 		}
 		System.out.println("\n");
 
