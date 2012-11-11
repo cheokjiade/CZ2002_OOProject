@@ -3,17 +3,14 @@ package com.oopj.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseClass implements Choosable  {
+public class CourseClass extends UniqueObject implements Choosable  {
 	private int maxSize;
-	private String id;
-	private String name;
 	private int type;
 	private Course parentCourse;
 	private List<Student> studentList;
 	public CourseClass(String name, String id, int maxSize, int type, Course parentCourse) {
+		super(name, id);
 		this.maxSize = maxSize;
-		this.id = id;
-		this.name = name;
 		this.type = type;
 		this.parentCourse = parentCourse;
 		studentList = new ArrayList<Student>();
@@ -23,18 +20,6 @@ public class CourseClass implements Choosable  {
 	}
 	public void setMaxSize(int maxSize) {
 		this.maxSize = maxSize;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 	}
 	public Course getParentCourse() {
 		return parentCourse;

@@ -5,17 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Course implements Choosable{
-	private String name;
-	private String id;
+public class Course extends UniqueObject implements Choosable{
 	private List<Student> studentList;
 	private List<CourseClass> courseClassList;
 	private Exam exam;
 	private CourseWork courseWork;
 	private Professor professor;
 	public Course(String name, String id) {
-		this.name = name;
-		this.id = id;
+		super(name, id);
 		studentList = new ArrayList<Student>();
 		courseClassList = new ArrayList<CourseClass>();
 	}
@@ -24,18 +21,6 @@ public class Course implements Choosable{
 	}
 	public void setCourseClassList(List<CourseClass> courseClassList) {
 		this.courseClassList = courseClassList;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
 	}
 	public List<Student> getStudentList() {
 		return studentList;
@@ -64,7 +49,6 @@ public class Course implements Choosable{
 	@Override
 	public String printString() {
 		return "ID: " + this.getId() + " Name: " + this.getName();
-		
 	}
 	
 }

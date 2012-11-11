@@ -10,17 +10,19 @@ import com.oopj.entities.*;
 
 public class main {
 
-	/**
-	 * @param args
-	 */
-	public static List<Student> studentList;//= new ArrayList<Student>();
-	public static List<Course> courseList;// =  new ArrayList<Course>();
-	public static List<CourseClass> courseClassList;
-	public static List<Professor> professorList;
+	//session variables
+	private static ArrayList<Student> studentList;//= new ArrayList<Student>();
+	private static ArrayList<Course> courseList;// =  new ArrayList<Course>();
+	private static ArrayList<CourseClass> courseClassList;
+	private static ArrayList<Professor> professorList;
+
 	static Scanner sc, strSC;
+	//init the database
 	static ObjectContainer db = Db4oEmbedded.openFile(Db4oEmbedded .newConfiguration(), "temp.db");
+
+	@SuppressWarnings({ "unchecked", "unused", "rawtypes" })
 	public static void main(String[] args) {
-		//Person person = new Student("a", "a");
+		//load all objects from the database
 		List <Student> studentsFromDB = db.query(Student.class);
 		List <Result> resultList = new ArrayList(db.query(Result.class));
 		List <ExamComponent> examComponentList = new ArrayList(db.query(ExamComponent.class));
@@ -29,8 +31,7 @@ public class main {
 		courseClassList = new ArrayList(db.query(CourseClass.class));
 		professorList = new ArrayList(db.query(Professor.class));
 
-		//db.query(CourseClass.class);
-		//studentList = db.query(Student.class);
+		//menu
 		int choice;
 		do{
 			System.out.println("\n*******************************************************************");
@@ -46,7 +47,8 @@ public class main {
 			System.out.println("(7) Enter Coursework Marks inclusive of its Components");
 			System.out.println("(8) Enter Exam Marks");
 			System.out.println("(9) Print Course Statistic");
-			System.out.println("(10) Print Transcript\n");
+			System.out.println("(10) Print Transcript");
+			System.out.println("(21) Exit\n");
 			System.out.print("Choice made:");
 			sc = new Scanner(System.in);
 			strSC = new Scanner(System.in);
@@ -119,11 +121,10 @@ public class main {
 		System.out.print("Add a Student : Input Student's Name and Matriculation No. - ");
 		//String tempString = sc.nextLine();
 		Student student = new Student(strSC.nextLine(), sc.next());
-		for(Student s: studentList) 
-			if(s.getId().equals(student.getId())){
-				System.out.println("Student not added! Matriculation No. already exists!");
-				return;
-			}
+		if(findIDExists(student, studentList)){
+			System.out.println("Student not added! Matriculation No. already exists!");
+			return;
+		}
 		if(studentList==null) studentList = new ArrayList<Student>();
 		studentList.add(student);
 		System.out.println("New Student : " + student.getId() + " - " + student.getName() + " has been added successfully!\n");
@@ -134,30 +135,34 @@ public class main {
 			System.out.println(s.getId() + " - " + s.getName());
 		}
 	}
-	
+
 	public static void addProfessor(){
 		System.out.print("Add a Professor : Input Professor's Name and Staff No. - ");
 		Professor professor = new Professor(strSC.nextLine(), sc.next());
-		for(Professor p: professorList) 
-			if(p.getId().equals(professor.getId())){
-				System.out.println("Professor not added! Staff No. already exists!");
-				return;
-			}
+		if(findIDExists(professor, professorList)){
+			System.out.println("Professor not added! Staff No. already exists!");
+			return;
+		}
 		if(professorList==null) professorList = new ArrayList<Professor>();
 		professorList.add(professor);
 		System.out.println("Professor " + professor.getName() + ", Staff No. " + professor.getId() +  " has been added successfully!\n");
 		db.store(professor);
 
 	}
+	
+	public static boolean findIDExists(UniqueObject uo, ArrayList<? extends UniqueObject> uoList){
+		for(UniqueObject tempUO:uoList) if(tempUO.getId().equals(uo.getId())) return true;
+		return false;
+	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void addCourse(){
 		System.out.print("Add a Course : Input Course Name and Course Index - ");
 		Course course = new Course(strSC.nextLine(), sc.next());
-		for(Course c: courseList) 
-			if(c.getId().equals(course.getId())){
-				System.out.println("Course not added! Course Index already exists!");
-				return;
-			}
+		if(findIDExists(course, courseList)){
+			System.out.println("Course not added! Course Index already exists!");
+			return;
+		}
 		Professor testP = null;
 		while(testP==null){
 			System.out.print("Please select Professor-in-Charge for this course:\n");
@@ -172,7 +177,6 @@ public class main {
 				addProfessor();
 			}
 		}
-		
 		course.setProfessor(testP);
 		courseList.add(course);
 		System.out.println("New Course : " + course.getId() + " - " + course.getName() + "\tProfessor-in-Charge : " + course.getProfessor().getName() + " has been added successfully!\n");
@@ -217,7 +221,7 @@ public class main {
 		System.out.println(course.getId() + " " + course.getName());
 		for(CourseClass cc: course.getCourseClassList()){
 			System.out.println(cc.getId() + " - " + cc.getName());
-			}
+		}
 	}
 
 	public static void addClass(Course course, int type){
@@ -232,6 +236,7 @@ public class main {
 		System.out.println("New Course Class : " + classAmt + " " + classType + " has been added successfully!\n");
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void editAssessmentComponentWeightage(){
 		System.out.println("Choose Course to Update Assessment Component Weightage :");
 		Course tempCourse = (Course)chooseChoosable((ArrayList)courseList);
@@ -290,6 +295,7 @@ public class main {
 		db.store(tempCourse);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void editCourseWorkComponent(Course tempCourse){
 		CourseWork tempCourseWork = tempCourse.getCourseWork();
 		int choice;
@@ -316,11 +322,12 @@ public class main {
 			}
 
 		}while(choice==1||choice==2);
-		
-		
+
+
 
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void addExamResult(){
 		System.out.println("Select Course to Add Exam Results For :");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
@@ -332,6 +339,7 @@ public class main {
 		addResult(s, c.getExam());
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void addCourseWorkMark(){
 		System.out.println("Select Course to Add Coursework Marks For :");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
@@ -370,13 +378,15 @@ public class main {
 		return true;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void printStatistics(){
 		System.out.println("Select Course to View Statistics :");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
-		int actualExam, actualCourseWork, total, totalExam=0, totalCourseWorkWeight=0,overallAvgGrade=0;
+		int total, totalExam=0, totalCourseWorkWeight=0,overallAvgGrade=0;
 		for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();
 		total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
 		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();
+				
 		int avgExam = totalExam/c.getExam().getResultList().size();
 		int avgExamPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)100);
 		int avgExamWeightedPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
@@ -394,6 +404,9 @@ public class main {
 		System.out.println("Overall grade percentage for " + c.getName() + " is " + Integer.toString(overallAvgGrade));
 	}
 
+	/*
+	 * Method for choosing a particular object from an arraylist
+	 */
 	public static Choosable chooseChoosable(ArrayList<Choosable> choosableList){
 		if(choosableList.size()==0){
 			System.out.println("Empty list! Please try again!");
@@ -418,7 +431,6 @@ public class main {
 					sc.next();
 				}
 			}
-			
 			if(choice>0&&choice<=i-1) return choosableList.get((pageCount*10)+choice-1);
 			else if (choice==0){
 				pageCount=0;
@@ -433,6 +445,7 @@ public class main {
 		return null;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void registerStudent(){
 
 		System.out.println("Select Student to Register: ");
@@ -445,11 +458,32 @@ public class main {
 			System.out.println("Student is Already Enrolled in this Course.\n");
 			return;
 		}
-
-		//add student to course
 		s.getCourseList().add(c);
 		c.getStudentList().add(s);
 
+		if(!addCourseClass(s, c))return;
+		System.out.println("Student " + s.getName() + ", Matriculation No. " + s.getId() + " Has Successfully Been Enrolled to the Following Course:");
+		printClassesOfCourseStudentEnrolledIn(s, c);
+		System.out.println("\n");
+
+		db.store(s);
+		db.store(c);
+		db.store(c.getStudentList());
+		db.store(c.getCourseClassList());
+	}
+
+	public static void printClassesOfCourseStudentEnrolledIn(Student s, Course c) {
+		for(CourseClass cc1: s.getCourseClassList()){
+			if(cc1.getParentCourse().equals(c)){
+				String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
+				System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + " - " + cc1.getId());
+			}
+
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static boolean addCourseClass(Student s, Course c) {
 		for(int i=1;i<=3;i++){
 			ArrayList<CourseClass> tempCCList = new ArrayList<CourseClass>();
 			for(CourseClass tempCC: c.getCourseClassList()){ 
@@ -462,42 +496,20 @@ public class main {
 				CourseClass cc;
 				do{
 					cc = (CourseClass)chooseChoosable((ArrayList)tempCCList);
-					if(cc==null) return;
+					if(cc==null) return false;
 					if(cc.getMaxSize() - cc.getStudentList().size() == 0)
 						System.out.println("Course " + c.getId() + " - " + c.getName() + " - " + cc.getName() + " " + cc.getId() + " Has No More Vacancy. Please Select Another Class!\n");
 				}while(cc.getMaxSize() - cc.getStudentList().size() == 0);
-				//if(cc.getMaxSize() - cc.getStudentList().size() == 0) //how to prompt again, while loop?
-					
-				//else {
-					s.getCourseClassList().add(cc);
-					cc.getStudentList().add(s);
-					//System.out.println("Student " + s.getName() + ", Matriculation No. " + s.getId() + " Has Successfully been Enrolled to the Following Course:");
-					db.store(cc);
-//					for(CourseClass cc1: s.getCourseClassList()){
-//						String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
-//						System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + " - " + cc1.getId());
-//
-//					}
-				//}
+				s.getCourseClassList().add(cc);
+				cc.getStudentList().add(s);
+				db.store(cc);
 			}
 		}
-		System.out.println("Student " + s.getName() + ", Matriculation No. " + s.getId() + " Has Successfully Been Enrolled to the Following Course:");
-		for(CourseClass cc1: s.getCourseClassList()){
-			if(cc1.getParentCourse().equals(c)){
-				String classType = cc1.getType()==1?"Lecture":cc1.getType()==2?"Tutorial":"Laboratory";
-				System.out.println(c.getId() + " " + c.getName() + " - " + classType + " " + cc1.getName() + " - " + cc1.getId());
-			}
-			
-		}
-		System.out.println("\n");
-
-		db.store(s);
-		db.store(c);
-		db.store(c.getStudentList());
-		db.store(c.getCourseClassList());
+		return true;
 	}
 
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void printVacancy(){
 		System.out.println("Select Course To View Vacancy : ");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
@@ -511,13 +523,15 @@ public class main {
 					int vac = tempCC.getMaxSize() - tempCC.getStudentList().size();
 					String classType = tempCC.getType()==1?"Lecture":tempCC.getType()==2?"Tutorial":"Laboratory";
 					System.out.println(classType + " : \tIndex : "+ tempCC.getId() + " \tName : " + tempCC.getName() + " \tVacancy :" + vac + "/" + tempCC.getMaxSize());
-
 				}
 			}
 		}
 	}
 
-
+	/*
+	 * Prints the student list
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void printStudentList() {
 		System.out.println("Please Select the Course to Display: ");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
@@ -527,50 +541,50 @@ public class main {
 		if(cc==null)return;
 		String classType = cc.getType()==1?"lecture":cc.getType()==2?"tutorial":"laboratory";
 		System.out.println("Printing Course List of Students in " + cc.getId() + " " + cc.getName() + " " + classType);
-		
+
 		for (Student s: cc.getStudentList())
 			System.out.println("Student's Matriculation No. : " + s.getId() +"\tStudent's Name : " + s.getName());
-		if(cc.getStudentList().size()==0) System.out.println("No existing student registered in this class.");
+				if(cc.getStudentList().size()==0) System.out.println("No existing student registered in this class.");
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void printTranscript() {
 
 		System.out.println("Please Select Student Matriculation No. to Display Transcript : ");
 		Student s = (Student)chooseChoosable((ArrayList)studentList);
-
-		double totalCourseGrade = 0.00;
-
 		for (Course c: s.getCourseList()) {
-			int actualExam, actualCourseWork, total, totalExam=0, totalCourseWorkWeight=0, studentCourseTotalMark=0;
+			int total, totalCourseWorkWeight=0, studentCourseTotalMark=0;
 			for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();
-			total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
-			System.out.println("Results for Course: " + c.getName() + "...");
-			Result examResult = null;
-			for(Result r:c.getExam().getResultList())
-				if(r.getParentStudent().equals(s)){
-					examResult=r;
-					break;
-				}
-			if(examResult==null)return;
-			int adjustedExam = (int)((double)examResult.getScore()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
-			System.out.printf("Exam:\t\tActual: %d/%d\tAdjusted:%d/%d\n",examResult.getScore(),c.getExam().getTotalScore(),adjustedExam,(int)((double)c.getExam().getWeightage()/(double)total*100));
-			System.out.println("\nCoursework Breakdown:");
-			for(Component com:c.getCourseWork().getComponent()){
-				Result comResult = null;
-				for(Result r:com.getResultList())
-					if(r.getParentStudent().equals(s)){
-						comResult=r;
-						break;
+					total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
+					System.out.println("Results for Course: " + c.getName() + "...");
+					Result examResult = null;
+					for(Result r:c.getExam().getResultList()){
+						if(r.getParentStudent().equals(s)){
+							examResult=r;
+							break;
+						}
 					}
-				int adjustedResult = (int)((double)comResult.getScore()/(double)com.getTotalScore() * (double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
-				studentCourseTotalMark += adjustedResult;
-				int adjustedTotal = (int)((double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
-				System.out.printf("%s:\t\tActual: %d/%d\tAdjusted:%d/%d\n",com.getName(),comResult.getScore(),com.getTotalScore(),adjustedResult,adjustedTotal);
-			}
-			studentCourseTotalMark += adjustedExam;
-			System.out.printf("Final Mark: %d/100 Final Grade: %s",studentCourseTotalMark, computeGrade(studentCourseTotalMark));
-			System.out.println();
-			System.out.println();
+					if(examResult==null)return;
+					int adjustedExam = (int)((double)examResult.getScore()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
+					System.out.printf("Exam:\t\tActual: %d/%d\tAdjusted:%d/%d\n",examResult.getScore(),c.getExam().getTotalScore(),adjustedExam,(int)((double)c.getExam().getWeightage()/(double)total*100));
+					System.out.println("\nCoursework Breakdown:");
+					for(Component com:c.getCourseWork().getComponent()){
+						Result comResult = null;
+						for(Result r:com.getResultList()){
+							if(r.getParentStudent().equals(s)){
+							comResult=r;
+							break;
+						}
+					}
+					int adjustedResult = (int)((double)comResult.getScore()/(double)com.getTotalScore() * (double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
+					studentCourseTotalMark += adjustedResult;
+					int adjustedTotal = (int)((double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
+					System.out.printf("%s:\t\tActual: %d/%d\tAdjusted:%d/%d\n",com.getName(),comResult.getScore(),com.getTotalScore(),adjustedResult,adjustedTotal);
+					}
+					studentCourseTotalMark += adjustedExam;
+					System.out.printf("Final Mark: %d/100 Final Grade: %s",studentCourseTotalMark, computeGrade(studentCourseTotalMark));
+					System.out.println();
+					System.out.println();
 
 		}
 

@@ -10,8 +10,7 @@ public class Student extends Person implements Choosable{
 	private List<CourseClass> courseClassList;
 	
 	public Student (String name, String id){
-		this.setName(name);
-		this.setId(id);
+		super(name, id);
 		this.resultList = new ArrayList<Result>();
 		courseList = new ArrayList<Course>();
 		courseClassList = new ArrayList<CourseClass>();

@@ -7,8 +7,7 @@ public class Professor extends Person implements Choosable {
 	private List<Course> courseList;
 
 	public Professor(String name, String id) {
-		this.setName(name);
-		this.setId(id);
+		super(name, id);
 		this.courseList = new ArrayList<Course>();
 	}
 	
@@ -22,7 +21,6 @@ public class Professor extends Person implements Choosable {
 
 	@Override
 	public String printString() {
-		// TODO Auto-generated method stub
 		return "ID: " + this.getId() + " Name: " + this.getName();
 	}
 	

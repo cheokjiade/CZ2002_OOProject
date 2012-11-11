@@ -1,6 +1,6 @@
 package com.oopj.entities;
 
-public class Result {
+public class Result{
 	private String id;
 	private int score;
 	

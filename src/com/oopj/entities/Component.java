@@ -9,8 +9,7 @@ public class Component extends ExamComponent implements Choosable{
 	private CourseWork parentCourseWork;
 	
 	public Component(String id, String name, int totalScore, int weightage, CourseWork parentCourseWork){
-		this.setId(id);
-		this.setName(name);
+		super(name, id);
 		this.setTotalScore(totalScore);
 		this.setWeightage(weightage);
 		this.parentCourseWork = parentCourseWork;

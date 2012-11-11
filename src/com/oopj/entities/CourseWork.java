@@ -3,39 +3,18 @@ package com.oopj.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseWork implements Choosable{
-	private String id;
-	private String name;
+public class CourseWork extends UniqueObject implements Choosable{
 	private int weightage;
 	
 	private Course parentCourse;
 	private List<Component> componentList;
 	public CourseWork(String id, String name, int weightage, Course parentCourse) {
-		super();
-		this.id = id;
-		this.name = name;
+		super(name, id);
 		this.weightage = weightage;
 		this.parentCourse = parentCourse;
 		this.componentList = new ArrayList<Component>();
 	}
 	
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public int getWeightage() {
 		return weightage;
 	}
@@ -55,7 +34,7 @@ public class CourseWork implements Choosable{
 
 	@Override
 	public String printString() {
-		return "Component name: " + name + " \tWeightage:" + Integer.toString(weightage);
+		return "Component name: " + this.getName() + " \tWeightage:" + Integer.toString(weightage);
 	}
 
 	
