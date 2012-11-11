@@ -245,7 +245,7 @@ public class main {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void editAssessmentComponentWeightage(){
+	public static void editAssessmentComponentWeightage(){ // edit weightage of components
 		System.out.println("Choose Course to Update Assessment Component Weightage :");
 		Course tempCourse = (Course)chooseChoosable((ArrayList)courseList);
 		System.out.printf("Exam total and weightage has %sbeen set.\n",tempCourse.getExam()==null?"not ":"");
@@ -260,13 +260,13 @@ public class main {
 
 	}
 
-	public static void editExam(Course tempCourse){
-		if(tempCourse.getExam()==null){
+	public static void editExam(Course tempCourse){//edit weighted percentage of exam and its total mark
+		if(tempCourse.getExam()==null){//add new percentage
 			System.out.print("Please Input Total Score of the Exam and its Weighted Percentage : ");
 			Exam tempExam = new Exam(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), sc.nextInt(), tempCourse);
 			tempCourse.setExam(tempExam);
 			System.out.println("Total Score of the Exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its Weighted Percentage is " + Integer.toString(tempCourse.getExam().getWeightage()));
-		}else{
+		}else{//edit existing percentage and total
 			System.out.println("Current Total Score of the Exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its Weighted Percentage is " + Integer.toString(tempCourse.getExam().getWeightage()));
 			System.out.print("Enter 1 to Update the Exam Total Marks and Weightage. Press Any Other Number to Quit. ");
 			int choice = sc.nextInt();
@@ -282,13 +282,13 @@ public class main {
 	}
 
 	public static void editCourseWork(Course tempCourse){
-		if(tempCourse.getCourseWork()==null){
+		if(tempCourse.getCourseWork()==null){//add percentage of coursework
 			System.out.print("Please Input Total Weighted Percentage of the Coursework : ");
 			CourseWork tempCourseWork = new CourseWork(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), tempCourse);
 			tempCourse.setCourseWork(tempCourseWork);
 			System.out.println("Weighted Percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
 			editCourseWorkComponent(tempCourse);
-		}else{
+		}else{//edit existing percentage
 			System.out.println("Current Weighted Percentage is" + Integer.toString(tempCourse.getCourseWork().getWeightage()));
 			System.out.print("Enter 1 to Update Coursework Total Weightage or 2 to Update Coursework Components : ");
 			int choice = sc.nextInt();
@@ -304,13 +304,13 @@ public class main {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void editCourseWorkComponent(Course tempCourse){
+	public static void editCourseWorkComponent(Course tempCourse){//add and edit components
 		CourseWork tempCourseWork = tempCourse.getCourseWork();
 		int choice;
 		do{
 			System.out.printf("There are currently %d Components.\nDo you want to 1. Add a new component%s?\n",tempCourseWork.getComponent().size(),tempCourseWork.getComponent().size()==0?"":" or 2. Update a component");
 			choice = sc.nextInt();
-			if(choice==1){
+			if(choice==1){//add a component to coursework
 				System.out.print("Please Input Component's Name, Total Marks and Weighted Percentage. ");
 				Component c = new Component(tempCourse.getId(), strSC.nextLine(), sc.nextInt(), sc.nextInt(), tempCourseWork);
 				tempCourseWork.getComponent().add(c);
@@ -318,7 +318,7 @@ public class main {
 				db.store(c);
 				db.store(tempCourse.getCourseWork());
 				db.store(tempCourse.getCourseWork().getComponent());
-			} else if (choice ==2 && tempCourseWork.getComponent().size()>0){
+			} else if (choice ==2 && tempCourseWork.getComponent().size()>0){//edit an existing component
 				Component c = (Component)chooseChoosable((ArrayList)tempCourseWork.getComponent());
 				if(c==null) continue;
 				System.out.print("Please Input Updated Component's Name, Total Marks and Weighted Percentage. ");
@@ -336,7 +336,7 @@ public class main {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void addExamResult(){
+	public static void addExamResult(){//add results for a student and course exam
 		System.out.println("Select Course to Add Exam Results For :");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
 		if(c==null)return;
@@ -348,7 +348,7 @@ public class main {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void addCourseWorkMark(){
+	public static void addCourseWorkMark(){//add score for a coursework component
 		System.out.println("Select Course to Add Coursework Marks For :");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
 		if(c==null)return;
@@ -362,17 +362,17 @@ public class main {
 		db.store(c);
 	}
 
-	public static boolean addResult(Student s, ExamComponent ec){
+	public static boolean addResult(Student s, ExamComponent ec){//add an result to either exam or component
 		for(Result r : s.getResultList()){
 			if(r.getParentExamComponent().equals(ec)) return false;
 		}
 		System.out.printf("Maximum Grade for %s is %d. Please Input Grade for %s : ",ec.getName(),ec.getTotalScore(),s.getName());
 		int grade = sc.nextInt();
-		if(grade>ec.getTotalScore()){
+		if(grade>ec.getTotalScore()){//if more than max grade, set to max grade
 			grade = ec.getTotalScore();
 			System.out.println("Mark entered exceeded maximum grade. Mark has been set to maximum.");
 		}
-		else if (grade<0) {
+		else if (grade<0) {//if below 0, set to 0
 			grade = 0;
 			System.out.println("Mark entered was below maximum grade. Mark has been set to 0.");
 		}
@@ -387,20 +387,20 @@ public class main {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void printStatistics(){
+	public static void printStatistics(){//print course statistics
 		System.out.println("Select Course to View Statistics :");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
 		int total, totalExam=0, totalCourseWorkWeight=0,overallAvgGrade=0;
-		for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();
+		for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();//get total weightage of all components in coursework
 		total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
-		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();
+		for(Result r:c.getExam().getResultList()) totalExam+=r.getScore();//total mark of all students for a course exam
 				
-		int avgExam = totalExam/c.getExam().getResultList().size();
-		int avgExamPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)100);
-		int avgExamWeightedPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
+		int avgExam = totalExam/c.getExam().getResultList().size();//get avg exam mark of a course
+		int avgExamPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)100);//avg percentage - avg mark/max score*100
+		int avgExamWeightedPercentage = (int) ((double)totalExam/(double)c.getExam().getResultList().size()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);//weighted mark - avg percentage*exam weightage/total weightage
 		overallAvgGrade+=avgExamWeightedPercentage;
 		System.out.printf("Average Actual Mark for Exam is %d/%d. Average Percentage is %d. Average Weighted Percentage is %d .\n",avgExam,c.getExam().getTotalScore(),avgExamPercentage,avgExamWeightedPercentage);
-		for(Component com: c.getCourseWork().getComponent()){
+		for(Component com: c.getCourseWork().getComponent()){//find previous for each component
 			int totalComponent=0;
 			for(Result r : com.getResultList()) totalComponent+=r.getScore();
 			int avgComponent = totalComponent/com.getResultList().size();
@@ -423,14 +423,14 @@ public class main {
 		int choice,pageCount=0,i;
 		boolean lastPage = false;
 		do{
-			for(i=1; pageCount*10+i-1<choosableList.size()&&i<=10;i++)
+			for(i=1; pageCount*10+i-1<choosableList.size()&&i<=10;i++)//print 10 items per page
 				System.out.println("("+ Integer.toString(i) +") " + (choosableList.get((pageCount*10+i-1))).printString());
 			if(i>=10&&((pageCount*10+i-1)<=choosableList.size())) System.out.println("Enter 11 to see the Next 10 "+ choosableList.get(0).getClass().getSimpleName());
 			else{
 				System.out.println("End of "+ choosableList.get(0).getClass().getSimpleName()+" List. Enter 0 to Restart the List or -1 to Quit");
 				lastPage = true;
 			}
-			while(true){
+			while(true){//only int input accepted
 				if(sc.hasNextInt()){
 					choice = sc.nextInt();
 					break;
@@ -491,7 +491,7 @@ public class main {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static boolean addCourseClass(Student s, Course c) {
+	public static boolean addCourseClass(Student s, Course c) {//adds a student to a class in a course
 		for(int i=1;i<=3;i++){
 			ArrayList<CourseClass> tempCCList = new ArrayList<CourseClass>();
 			for(CourseClass tempCC: c.getCourseClassList()){ 
@@ -518,12 +518,12 @@ public class main {
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void printVacancy(){
+	public static void printVacancy(){//prints vaccancy in a course
 		System.out.println("Select Course To View Vacancy : ");
 		Course c = (Course)chooseChoosable((ArrayList)courseList);
 		if(c==null)return;
 
-		for(int i=1;i<=3;i++){
+		for(int i=1;i<=3;i++){//3 course class types
 			ArrayList<CourseClass> tempCCList = new ArrayList<CourseClass>();
 			for(CourseClass tempCC: c.getCourseClassList()){ 
 				if(tempCC.getType()==i) {
@@ -560,45 +560,45 @@ public class main {
 
 		System.out.println("Please Select Student Matriculation No. to Display Transcript : ");
 		Student s = (Student)chooseChoosable((ArrayList)studentList);
-		for (Course c: s.getCourseList()) {
+		for (Course c: s.getCourseList()) {//loop through all courses
 			int total, totalCourseWorkWeight=0, studentCourseTotalMark=0;
-			for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();
-					total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();
-					System.out.println("Results for Course: " + c.getName() + "...");
-					Result examResult = null;
-					for(Result r:c.getExam().getResultList()){
-						if(r.getParentStudent().equals(s)){
-							examResult=r;
-							break;
-						}
-					}
-					if(examResult==null)return;
-					int adjustedExam = (int)((double)examResult.getScore()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
-					System.out.printf("Exam:\t\tActual: %d/%d\tAdjusted:%d/%d\n",examResult.getScore(),c.getExam().getTotalScore(),adjustedExam,(int)((double)c.getExam().getWeightage()/(double)total*100));
-					System.out.println("\nCoursework Breakdown:");
-					for(Component com:c.getCourseWork().getComponent()){
-						Result comResult = null;
-						for(Result r:com.getResultList()){
-							if(r.getParentStudent().equals(s)){
-							comResult=r;
-							break;
-						}
-					}
-					int adjustedResult = (int)((double)comResult.getScore()/(double)com.getTotalScore() * (double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
-					studentCourseTotalMark += adjustedResult;
-					int adjustedTotal = (int)((double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
-					System.out.printf("%s:\t\tActual: %d/%d\tAdjusted:%d/%d\n",com.getName(),comResult.getScore(),com.getTotalScore(),adjustedResult,adjustedTotal);
-					}
-					studentCourseTotalMark += adjustedExam;
-					System.out.printf("Final Mark: %d/100 Final Grade: %s",studentCourseTotalMark, computeGrade(studentCourseTotalMark));
-					System.out.println();
-					System.out.println();
+			for(Component com:c.getCourseWork().getComponent()) totalCourseWorkWeight+= com.getWeightage();//add total component weightage
+			total = c.getExam().getWeightage() + c.getCourseWork().getWeightage();//total weightage for exam and component
+			System.out.println("Results for Course: " + c.getName() + "...");
+			Result examResult = null;
+			for(Result r:c.getExam().getResultList()){
+				if(r.getParentStudent().equals(s)){
+					examResult=r;
+					break;
+				}
+			}
+			if(examResult==null)return;
+			int adjustedExam = (int)((double)examResult.getScore()/(double)c.getExam().getTotalScore()*(double)c.getExam().getWeightage()/(double)total*(double)100);
+			System.out.printf("Exam:\t\tActual: %d/%d\tAdjusted:%d/%d\n",examResult.getScore(),c.getExam().getTotalScore(),adjustedExam,(int)((double)c.getExam().getWeightage()/(double)total*100));
+			System.out.println("\nCoursework Breakdown:");
+			for(Component com:c.getCourseWork().getComponent()){
+				Result comResult = null;
+				for(Result r:com.getResultList()){
+					if(r.getParentStudent().equals(s)){
+					comResult=r;
+					break;
+				}
+			}
+			int adjustedResult = (int)((double)comResult.getScore()/(double)com.getTotalScore() * (double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
+			studentCourseTotalMark += adjustedResult;
+			int adjustedTotal = (int)((double)com.getWeightage()/(double)totalCourseWorkWeight * (double)c.getCourseWork().getWeightage() /(double)total * (double)100);
+			System.out.printf("%s:\t\tActual: %d/%d\tAdjusted:%d/%d\n",com.getName(),comResult.getScore(),com.getTotalScore(),adjustedResult,adjustedTotal);
+			}
+			studentCourseTotalMark += adjustedExam;
+			System.out.printf("Final Mark: %d/100 Final Grade: %s",studentCourseTotalMark, computeGrade(studentCourseTotalMark));
+			System.out.println();
+			System.out.println();
 
 		}
 
 	}
 
-	public static String computeGrade(double totalCourseGrade) {
+	public static String computeGrade(double totalCourseGrade) {//returns a grade based on final mark
 		String grade;
 
 		if (totalCourseGrade > 80)
@@ -613,12 +613,12 @@ public class main {
 
 	} 
 
-	public static void viewAllStudents(){
+	public static void viewAllStudents(){//test methods..deprecated
 		for(Student s: studentList){
 			System.out.println("Student's Matriculation No. : " +s.getId() + "\tStudent's Name: " + s.getName());
 		}
 	}
-	public static void viewAllCourses(){
+	public static void viewAllCourses(){//test methods..deprecated
 		for(Course c: courseList){
 			System.out.println("Course Index: " +c.getId() + "\tCourse Name: " + c.getName());
 			for(CourseClass cc : c.getCourseClassList()){
