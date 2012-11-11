@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends Person implements Choosable{
-	//private 
+	
 	private List<Result> resultList;
 	private List<Course> courseList;
 	private List<CourseClass> courseClassList;

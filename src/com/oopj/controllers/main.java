@@ -117,28 +117,36 @@ public class main {
 
 	}
 
-	public static void addStudent(){
+	//adding a new student to the system
+	public static void addStudent(){  
 		System.out.print("Add a Student : Input Student's Name and Matriculation No. - ");
-		//String tempString = sc.nextLine();
 		Student student = new Student(strSC.nextLine(), sc.next());
+		
+		// if student is already registered (matric no.)
 		if(findIDExists(student, studentList)){
 			System.out.println("Student not added! Matriculation No. already exists!");
 			return;
 		}
+		
 		if(studentList==null) studentList = new ArrayList<Student>();
 		studentList.add(student);
 		System.out.println("New Student : " + student.getId() + " - " + student.getName() + " has been added successfully!\n");
 		db.store(student);
 
 		System.out.println("List of Students Registered:");
-		for(Student s: studentList){//int i=0;i<studentList.size();i++
+		
+		//for every student in the student list
+		for(Student s: studentList){
 			System.out.println(s.getId() + " - " + s.getName());
 		}
 	}
 
+	//adding a new professor to the system
 	public static void addProfessor(){
 		System.out.print("Add a Professor : Input Professor's Name and Staff No. - ");
 		Professor professor = new Professor(strSC.nextLine(), sc.next());
+		
+		// if professor is already in the system (staff id)
 		if(findIDExists(professor, professorList)){
 			System.out.println("Professor not added! Staff No. already exists!");
 			return;
@@ -150,15 +158,18 @@ public class main {
 
 	}
 	
+	//checking if id exist by passing in arraylist, and checking against its id
 	public static boolean findIDExists(UniqueObject uo, ArrayList<? extends UniqueObject> uoList){
 		for(UniqueObject tempUO:uoList) if(tempUO.getId().equals(uo.getId())) return true;
 		return false;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void addCourse(){
+	public static void addCourse(){ //adding a new course to the system
 		System.out.print("Add a Course : Input Course Name and Course Index - ");
 		Course course = new Course(strSC.nextLine(), sc.next());
+		
+		//checking if course already added (course id)
 		if(findIDExists(course, courseList)){
 			System.out.println("Course not added! Course Index already exists!");
 			return;
@@ -168,11 +179,11 @@ public class main {
 			System.out.print("Please select Professor-in-Charge for this course:\n");
 			if (professorList.size() ==0){
 				System.out.print("No professor in list yet. Please add a new professor!\n");
-				addProfessor();
+				addProfessor(); //if no professor is in the list, create a new professor immediately
 			}else{
 				System.out.print("Select a professor or cancel to add a new professor:\n");
 			}
-			testP = (Professor)chooseChoosable((ArrayList)professorList);
+			testP = (Professor)chooseChoosable((ArrayList)professorList); //displaying a list of professors
 			if(testP==null){
 				addProfessor();
 			}
@@ -180,15 +191,12 @@ public class main {
 		course.setProfessor(testP);
 		courseList.add(course);
 		System.out.println("New Course : " + course.getId() + " - " + course.getName() + "\tProfessor-in-Charge : " + course.getProfessor().getName() + " has been added successfully!\n");
-		/*System.out.println("List of courses:");
-		for(Course c: courseList){//int i=0;i<studentList.size();i++
-			System.out.println("Course Index: " + c.getId() + " \tCourse Name: " + c.getName() + " \tProfessor-in-charge: " + c.getProfessor().getName());
-		}*/
+		
 		addCourseClass(course);
 		db.store(course);
 	}
 
-	public static void addCourseClass(Course course){
+	public static void addCourseClass(Course course){ //adding course class - LEC, LAB, TUT to each course created
 		System.out.println("Add Course Class Types : ");
 		System.out.println("(1) Lectures, Laboratory, Tutorials");
 		System.out.println("(2) Lectures & Tutorials ONLY");
@@ -224,11 +232,11 @@ public class main {
 		}
 	}
 
-	public static void addClass(Course course, int type){
+	public static void addClass(Course course, int type){ //adding class information - name, index, intake size for each course class created
 		String classType = type==1?"lecture":type==2?"tutorial":"laboratory";
 		System.out.println("How many classes for " + course.getName() + " - " + classType + " ?");
 		int classAmt = sc.nextInt();
-		for(int i =0;i<classAmt;i++){
+		for(int i =0;i<classAmt;i++){ //repeat this step for # of classes they've entered
 			System.out.println("Add a Course Class : Input Class Name, Class Index, Class Intake Size.");
 			CourseClass tempCourseClass = new CourseClass(sc.next(), sc.next(), sc.nextInt(), type, course);
 			course.getCourseClassList().add(tempCourseClass);
