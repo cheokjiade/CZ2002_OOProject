@@ -65,10 +65,10 @@ public class main {
 
 			switch(choice){
 			case 1:
-				addStudent();
+				addStudentUI();
 				break;
 			case 2:
-				addCourse();
+				addCourseUI();
 				break;
 			case 3:
 				registerStudent();
@@ -118,44 +118,57 @@ public class main {
 	}
 
 	//adding a new student to the system
-	public static void addStudent(){  
+	public static void addStudentUI(){  
 		System.out.print("Add a Student : Input Student's Name and Matriculation No. - ");
-		Student student = new Student(strSC.nextLine(), sc.next());
-		
-		// if student is already registered (matric no.)
-		if(findIDExists(student, studentList)){
+		String name = strSC.nextLine();
+		String id = sc.next();
+		Student student = addStudent(name, id);
+		if(student==null) {
 			System.out.println("Student not added! Matriculation No. already exists!");
 			return;
 		}
-		
-		if(studentList==null) studentList = new ArrayList<Student>();
-		studentList.add(student);
 		System.out.println("New Student : " + student.getId() + " - " + student.getName() + " has been added successfully!\n");
-		db.store(student);
-
 		System.out.println("List of Students Registered:");
-		
 		//for every student in the student list
 		for(Student s: studentList){
 			System.out.println(s.getId() + " - " + s.getName());
 		}
 	}
 
+	public static Student addStudent(String name, String id) {
+		Student student = new Student(name, id);
+		// if student is already registered (matric no.)
+		if(findIDExists(student, studentList)) return null;
+		if(studentList==null) studentList = new ArrayList<Student>();
+		studentList.add(student);
+		db.store(student);
+		return student;
+	}
+	
+
 	//adding a new professor to the system
-	public static void addProfessor(){
+	public static void addProfessorUI(){
 		System.out.print("Add a Professor : Input Professor's Name and Staff No. - ");
-		Professor professor = new Professor(strSC.nextLine(), sc.next());
-		
-		// if professor is already in the system (staff id)
-		if(findIDExists(professor, professorList)){
+		String name = strSC.nextLine();
+		String id = sc.next();
+		Professor professor = addProfessor(name, id);
+		if(professor==null){
 			System.out.println("Professor not added! Staff No. already exists!");
 			return;
 		}
+		System.out.println("Professor " + professor.getName() + ", Staff No. " + professor.getId() +  " has been added successfully!\n");
+		
+
+	}
+
+	public static Professor addProfessor(String name, String id) {
+		Professor professor = new Professor(name, id);
+		// if professor is already in the system (staff id)
+		if(findIDExists(professor, professorList)) return null;
 		if(professorList==null) professorList = new ArrayList<Professor>();
 		professorList.add(professor);
-		System.out.println("Professor " + professor.getName() + ", Staff No. " + professor.getId() +  " has been added successfully!\n");
 		db.store(professor);
-
+		return professor;
 	}
 	
 	//checking if id exist by passing in arraylist, and checking against its id
@@ -165,12 +178,12 @@ public class main {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void addCourse(){ //adding a new course to the system
+	public static void addCourseUI(){ //adding a new course to the system
 		System.out.print("Add a Course : Input Course Name and Course Index - ");
-		Course course = new Course(strSC.nextLine(), sc.next());
-		
-		//checking if course already added (course id)
-		if(findIDExists(course, courseList)){
+		String name = strSC.nextLine();
+		String id = sc.next();
+		Course course = addCourse(name, id);
+		if(course==null){
 			System.out.println("Course not added! Course Index already exists!");
 			return;
 		}
@@ -179,13 +192,13 @@ public class main {
 			System.out.print("Please select Professor-in-Charge for this course:\n");
 			if (professorList.size() ==0){
 				System.out.print("No professor in list yet. Please add a new professor!\n");
-				addProfessor(); //if no professor is in the list, create a new professor immediately
+				addProfessorUI(); //if no professor is in the list, create a new professor immediately
 			}else{
 				System.out.print("Select a professor or cancel to add a new professor:\n");
 			}
 			testP = (Professor)chooseChoosable((ArrayList)professorList); //displaying a list of professors
 			if(testP==null){
-				addProfessor();
+				addProfessorUI();
 			}
 		}
 		course.setProfessor(testP);
@@ -196,6 +209,16 @@ public class main {
 		db.store(course);
 	}
 
+	public static Course addCourse(String name, String id) {
+		Course course = new Course(name, id);
+		//checking if course already added (course id)
+		if(findIDExists(course, courseList)){
+			
+			return null;
+		}
+		return course;
+	}
+
 	public static void addCourseClass(Course course){ //adding course class - LEC, LAB, TUT to each course created
 		System.out.println("Add Course Class Types : ");
 		System.out.println("(1) Lectures, Laboratory, Tutorials");
@@ -203,7 +226,16 @@ public class main {
 		System.out.println("(3) Lectures ONLY\n");
 		System.out.println("Choice made : ");
 		sc = new Scanner(System.in);
-		int choiceOfClass = sc.nextInt();
+		int choiceOfClass;// = sc.nextInt();
+		while(true){//only int input accepted
+			if(sc.hasNextInt()){
+				choiceOfClass = sc.nextInt();
+				break;
+			}else {
+				System.out.println("Please enter a valid choice!");
+				sc.next();
+			}
+		}
 
 		switch(choiceOfClass){
 		case 1:
@@ -235,10 +267,29 @@ public class main {
 	public static void addClass(Course course, int type){ //adding class information - name, index, intake size for each course class created
 		String classType = type==1?"lecture":type==2?"tutorial":"laboratory";
 		System.out.println("How many classes for " + course.getName() + " - " + classType + " ?");
-		int classAmt = sc.nextInt();
+		int classAmt;// = sc.nextInt();
+		while(true){//only int input accepted
+			if(sc.hasNextInt()){
+				classAmt = sc.nextInt();
+				break;
+			}else {
+				System.out.println("Please enter a valid choice!");
+				sc.next();
+			}
+		}
 		for(int i =0;i<classAmt;i++){ //repeat this step for # of classes they've entered
 			System.out.println("Add a Course Class : Input Class Name, Class Index, Class Intake Size.");
-			CourseClass tempCourseClass = new CourseClass(sc.next(), sc.next(), sc.nextInt(), type, course);
+			int inClassType;
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					inClassType = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
+			CourseClass tempCourseClass = new CourseClass(sc.next(), sc.next(), inClassType, type, course);
 			course.getCourseClassList().add(tempCourseClass);
 		}
 		System.out.println("New Course Class : " + classAmt + " " + classType + " has been added successfully!\n");
@@ -253,7 +304,16 @@ public class main {
 		int choice;
 		do{
 			System.out.println("Press 1 to Update Exam and 2 to Update Coursework. Press Any Other Number to Quit.");
-			choice = sc.nextInt();
+			//choice;// = sc.nextInt();
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					choice = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
 			if(choice==1) editExam(tempCourse);
 			else if (choice==2)editCourseWork(tempCourse);
 		} while (choice == 1 || choice == 2);
@@ -263,17 +323,64 @@ public class main {
 	public static void editExam(Course tempCourse){//edit weighted percentage of exam and its total mark
 		if(tempCourse.getExam()==null){//add new percentage
 			System.out.print("Please Input Total Score of the Exam and its Weighted Percentage : ");
-			Exam tempExam = new Exam(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), sc.nextInt(), tempCourse);
+			int totalScore, weightage;
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					totalScore = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					weightage = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
+			Exam tempExam = new Exam(tempCourse.getId(), tempCourse.getName(), weightage, totalScore, tempCourse);
 			tempCourse.setExam(tempExam);
 			System.out.println("Total Score of the Exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its Weighted Percentage is " + Integer.toString(tempCourse.getExam().getWeightage()));
 		}else{//edit existing percentage and total
 			System.out.println("Current Total Score of the Exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its Weighted Percentage is " + Integer.toString(tempCourse.getExam().getWeightage()));
 			System.out.print("Enter 1 to Update the Exam Total Marks and Weightage. Press Any Other Number to Quit. ");
-			int choice = sc.nextInt();
+			int choice;// = sc.nextInt();
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					choice = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
 			if(choice == 1){
 				System.out.println("Please Input Total Score of the Exam and its Weighted Percentage ");
-				tempCourse.getExam().setTotalScore(sc.nextInt());
-				tempCourse.getExam().setWeightage(sc.nextInt());
+				int totalScore, weightage;
+				while(true){//only int input accepted
+					if(sc.hasNextInt()){
+						totalScore = sc.nextInt();
+						break;
+					}else {
+						System.out.println("Please enter a valid choice!");
+						sc.next();
+					}
+				}
+				while(true){//only int input accepted
+					if(sc.hasNextInt()){
+						weightage = sc.nextInt();
+						break;
+					}else {
+						System.out.println("Please enter a valid choice!");
+						sc.next();
+					}
+				}
+				tempCourse.getExam().setTotalScore(totalScore);
+				tempCourse.getExam().setWeightage(weightage);
 				System.out.println("Total score of the Exam is " + Integer.toString(tempCourse.getExam().getTotalScore()) + " and its Weighted Percentage is" + Integer.toString(tempCourse.getExam().getWeightage()));
 			}	
 		}
@@ -284,17 +391,46 @@ public class main {
 	public static void editCourseWork(Course tempCourse){
 		if(tempCourse.getCourseWork()==null){//add percentage of coursework
 			System.out.print("Please Input Total Weighted Percentage of the Coursework : ");
-			CourseWork tempCourseWork = new CourseWork(tempCourse.getId(), tempCourse.getName(), sc.nextInt(), tempCourse);
+			int weightage;
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					weightage = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
+			CourseWork tempCourseWork = new CourseWork(tempCourse.getId(), tempCourse.getName(), weightage, tempCourse);
 			tempCourse.setCourseWork(tempCourseWork);
 			System.out.println("Weighted Percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
 			editCourseWorkComponent(tempCourse);
 		}else{//edit existing percentage
 			System.out.println("Current Weighted Percentage is" + Integer.toString(tempCourse.getCourseWork().getWeightage()));
 			System.out.print("Enter 1 to Update Coursework Total Weightage or 2 to Update Coursework Components : ");
-			int choice = sc.nextInt();
+			int choice;// = sc.nextInt();
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					choice = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
 			if(choice == 1){
+				int weightage;
+				while(true){//only int input accepted
+					if(sc.hasNextInt()){
+						weightage = sc.nextInt();
+						break;
+					}else {
+						System.out.println("Please enter a valid choice!");
+						sc.next();
+					}
+				}
 				System.out.print("Please Input Total Weighted Percentage of Coursework : ");
-				tempCourse.getCourseWork().setWeightage(sc.nextInt());
+				tempCourse.getCourseWork().setWeightage(weightage);
 				System.out.println("Weighted Percentage is " + Integer.toString(tempCourse.getCourseWork().getWeightage()));
 			}else if(choice == 2){
 				editCourseWorkComponent(tempCourse);
@@ -309,10 +445,37 @@ public class main {
 		int choice;
 		do{
 			System.out.printf("There are currently %d Components.\nDo you want to 1. Add a new component%s?\n",tempCourseWork.getComponent().size(),tempCourseWork.getComponent().size()==0?"":" or 2. Update a component");
-			choice = sc.nextInt();
+			while(true){//only int input accepted
+				if(sc.hasNextInt()){
+					choice = sc.nextInt();
+					break;
+				}else {
+					System.out.println("Please enter a valid choice!");
+					sc.next();
+				}
+			}
 			if(choice==1){//add a component to coursework
 				System.out.print("Please Input Component's Name, Total Marks and Weighted Percentage. ");
-				Component c = new Component(tempCourse.getId(), strSC.nextLine(), sc.nextInt(), sc.nextInt(), tempCourseWork);
+				int totalScore, weightage;
+				while(true){//only int input accepted
+					if(sc.hasNextInt()){
+						totalScore = sc.nextInt();
+						break;
+					}else {
+						System.out.println("Please enter a valid choice!");
+						sc.next();
+					}
+				}
+				while(true){//only int input accepted
+					if(sc.hasNextInt()){
+						weightage = sc.nextInt();
+						break;
+					}else {
+						System.out.println("Please enter a valid choice!");
+						sc.next();
+					}
+				}
+				Component c = new Component(tempCourse.getId(), strSC.nextLine(), totalScore, weightage, tempCourseWork);
 				tempCourseWork.getComponent().add(c);
 				db.store(tempCourse);
 				db.store(c);
@@ -323,8 +486,27 @@ public class main {
 				if(c==null) continue;
 				System.out.print("Please Input Updated Component's Name, Total Marks and Weighted Percentage. ");
 				c.setName(sc.next());
-				c.setTotalScore(sc.nextInt());
-				c.setWeightage(sc.nextInt());
+				int totalScore, weightage;
+				while(true){//only int input accepted
+					if(sc.hasNextInt()){
+						totalScore = sc.nextInt();
+						break;
+					}else {
+						System.out.println("Please enter a valid choice!");
+						sc.next();
+					}
+				}
+				while(true){//only int input accepted
+					if(sc.hasNextInt()){
+						weightage = sc.nextInt();
+						break;
+					}else {
+						System.out.println("Please enter a valid choice!");
+						sc.next();
+					}
+				}
+				c.setTotalScore(totalScore);
+				c.setWeightage(weightage);
 				db.store(tempCourse);
 				db.store(c);
 			}
@@ -367,7 +549,16 @@ public class main {
 			if(r.getParentExamComponent().equals(ec)) return false;
 		}
 		System.out.printf("Maximum Grade for %s is %d. Please Input Grade for %s : ",ec.getName(),ec.getTotalScore(),s.getName());
-		int grade = sc.nextInt();
+		int grade;// = sc.nextInt();
+		while(true){//only int input accepted
+			if(sc.hasNextInt()){
+				grade = sc.nextInt();
+				break;
+			}else {
+				System.out.println("Please enter a valid choice!");
+				sc.next();
+			}
+		}
 		if(grade>ec.getTotalScore()){//if more than max grade, set to max grade
 			grade = ec.getTotalScore();
 			System.out.println("Mark entered exceeded maximum grade. Mark has been set to maximum.");
